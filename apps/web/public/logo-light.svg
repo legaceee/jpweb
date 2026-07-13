@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 100" fill="none">
+  <!-- Icon Mark -->
+  <g transform="translate(10, 10)">
+    <!-- Architectural grid lines in background -->
+    <path d="M 5 5 L 75 5 L 75 75 L 5 75 Z" stroke="#E5E5E5" stroke-width="1" stroke-dasharray="2 2" />
+    <path d="M 5 40 L 75 40" stroke="#E5E5E5" stroke-width="1" stroke-dasharray="2 2" />
+    <path d="M 40 5 L 40 75" stroke="#E5E5E5" stroke-width="1" stroke-dasharray="2 2" />
+    
+    <!-- Bold J Structure (Bronze Gold) -->
+    <path d="M 30 15 L 40 15 L 40 55 C 40 65, 20 65, 20 55" stroke="#C5A880" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+    
+    <!-- Bold P Structure (Dark Charcoal) -->
+    <path d="M 40 15 L 55 15 C 65 15, 65 35, 55 35 L 40 35" stroke="#1A1A1A" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+  
+  <!-- Typography -->
+  <text x="110" y="48" fill="#1A1A1A" font-family="'Outfit', 'Inter', sans-serif" font-size="28" font-weight="700" letter-spacing="3">JP ENTERPRISES</text>
+  <text x="110" y="70" fill="#C5A880" font-family="'Outfit', 'Inter', sans-serif" font-size="11" font-weight="500" letter-spacing="5">INTERIORS &amp; CIVIL CONTRACTORS</text>
+</svg>

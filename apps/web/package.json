@@ -1,0 +1,42 @@
+{
+  "name": "web",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --port 3000",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint --max-warnings 0",
+    "check-types": "next typegen && tsc --noEmit"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.4.0",
+    "@prisma/client": "latest",
+    "@repo/database": "workspace:*",
+    "@repo/ui": "workspace:*",
+    "framer-motion": "^12.42.2",
+    "lucide-react": "^1.24.0",
+    "next": "16.2.0",
+    "nodemailer": "^9.0.3",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-hook-form": "^7.81.0",
+    "react-icons": "^5.7.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@tailwindcss/postcss": "^4.3.2",
+    "@types/node": "^22.15.3",
+    "@types/nodemailer": "^8.0.1",
+    "@types/react": "19.2.2",
+    "@types/react-dom": "19.2.2",
+    "eslint": "^9.39.1",
+    "postcss": "^8.5.17",
+    "prisma": "latest",
+    "tailwindcss": "^4.3.2",
+    "typescript": "5.9.2"
+  }
+}
