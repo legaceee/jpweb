@@ -67,7 +67,7 @@ export default function Footer() {
           <h3 className="font-serif text-white font-semibold text-lg mb-6 border-b border-primary/20 pb-2 w-16">Location</h3>
           <div className="w-full h-48 rounded-lg overflow-hidden border border-white/10 grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition-all duration-300">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3783.3768233762885!2d73.8727402!3d18.5118742!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTjCsDMwJzQyLjciTiA3M8KwNTInMjEuOSJFOg!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+              src={contactConfig.googleMap}
               width="100%"
               height="100%"
               style={{ border: 0 }}

@@ -5,6 +5,7 @@
   --color-primary-hover: var(--accent-hover);
   --color-bg: var(--background);
   --color-fg: var(--foreground);
+  --color-foreground: var(--foreground);
   --color-card: var(--card-bg);
   --color-border: var(--card-border);
   

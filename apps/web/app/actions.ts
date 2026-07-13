@@ -2,8 +2,10 @@
 
 import { z } from "zod";
 import nodemailer from "nodemailer";
+import { headers } from "next/headers";
 import { prisma } from "@repo/database";
 import { contactConfig } from "../lib/config";
+import { analyzeRoomSpace } from "../lib/ai-service";
 
 // ----------------------------------------------------
 // Validation Schemas
@@ -103,6 +105,11 @@ export async function bookAppointment(formData: unknown) {
 
     const { fullName, phone, email, address, preferredDate, preferredTime, service, message } = parsed.data;
 
+    const headersList = await headers();
+    const userAgent = headersList.get("user-agent") || undefined;
+    const device = userAgent && /mobile/i.test(userAgent) ? "Mobile" : "Desktop";
+    const confirmationNumber = "JP-2026-" + Math.random().toString(36).substring(2,6).toUpperCase();
+
     // 1. Save to Database
     const appointment = await prisma.appointment.create({
       data: {
@@ -114,6 +121,9 @@ export async function bookAppointment(formData: unknown) {
         preferredTime,
         service,
         message: message || null,
+        confirmationNumber,
+        device,
+        userAgent,
         status: "PENDING",
       },
     });
@@ -370,5 +380,291 @@ export async function subscribeNewsletter(formData: unknown) {
     }
     console.error("[Newsletter Error] Subscription failed:", error);
     return { success: false, errors: { global: "Failed to subscribe. Try again." } };
+  }
+}
+
+// ----------------------------------------------------
+// Server Action: Save AI Report Assessment
+// ----------------------------------------------------
+export async function createAIReport(data: {
+  fullName: string;
+  phone: string;
+  email: string;
+  roomType: string;
+  analysisData: any;
+  maintenanceIssues: any;
+  approxCost: string;
+  approxTimeline: string;
+}) {
+  try {
+    const headersList = await headers();
+    const userAgent = headersList.get("user-agent") || undefined;
+    const device = userAgent && /mobile/i.test(userAgent) ? "Mobile" : "Desktop";
+
+    const report = await prisma.aIReport.create({
+      data: {
+        fullName: data.fullName,
+        phone: data.phone,
+        email: data.email,
+        roomType: data.roomType,
+        analysisData: data.analysisData,
+        maintenanceIssues: data.maintenanceIssues,
+        approxCost: data.approxCost,
+        approxTimeline: data.approxTimeline,
+        userAgent,
+        device
+      }
+    });
+    return { success: true, data: report };
+  } catch (error) {
+    console.error("[Action Error] AIReport save failed:", error);
+    return { success: false };
+  }
+}
+
+// ----------------------------------------------------
+// Server Action: Save AI Visualization Render
+// ----------------------------------------------------
+export async function createAIVisualization(data: {
+  roomType: string;
+  style: string;
+  budget: string;
+  materials: any;
+  beforeImage: string;
+  afterImage: string;
+  email?: string;
+  phone?: string;
+}) {
+  try {
+    const headersList = await headers();
+    const userAgent = headersList.get("user-agent") || undefined;
+    const device = userAgent && /mobile/i.test(userAgent) ? "Mobile" : "Desktop";
+
+    const visual = await prisma.aIVisualization.create({
+      data: {
+        roomType: data.roomType,
+        style: data.style,
+        budget: data.budget,
+        materials: data.materials,
+        beforeImage: data.beforeImage,
+        afterImage: data.afterImage,
+        email: data.email || null,
+        phone: data.phone || null,
+        userAgent,
+        device
+      }
+    });
+    return { success: true, data: visual };
+  } catch (error) {
+    console.error("[Action Error] AIVisualization save failed:", error);
+    return { success: false };
+  }
+}
+
+// ----------------------------------------------------
+// Server Action: Save Cost Estimate Record
+// ----------------------------------------------------
+export async function createCostEstimate(data: {
+  fullName: string;
+  phone: string;
+  email: string;
+  propertyType: string;
+  area: number;
+  budgetTier: string;
+  location: string;
+  services: string;
+  estimatedCost: string;
+  estimatedTimeline: string;
+}) {
+  try {
+    const headersList = await headers();
+    const userAgent = headersList.get("user-agent") || undefined;
+    const device = userAgent && /mobile/i.test(userAgent) ? "Mobile" : "Desktop";
+
+    const estimate = await prisma.costEstimate.create({
+      data: {
+        fullName: data.fullName,
+        phone: data.phone,
+        email: data.email,
+        propertyType: data.propertyType,
+        area: data.area,
+        budgetTier: data.budgetTier,
+        location: data.location,
+        services: data.services,
+        estimatedCost: data.estimatedCost,
+        estimatedTimeline: data.estimatedTimeline,
+        userAgent,
+        device
+      }
+    });
+    return { success: true, data: estimate };
+  } catch (error) {
+    console.error("[Action Error] CostEstimate save failed:", error);
+    return { success: false };
+  }
+}
+
+// ----------------------------------------------------
+// Server Action: Save AI Chat session Logs
+// ----------------------------------------------------
+export async function saveAIChat(data: {
+  fullName?: string;
+  phone?: string;
+  email?: string;
+  messages: any;
+}) {
+  try {
+    const headersList = await headers();
+    const userAgent = headersList.get("user-agent") || undefined;
+    const device = userAgent && /mobile/i.test(userAgent) ? "Mobile" : "Desktop";
+
+    const chat = await prisma.aIChatSession.create({
+      data: {
+        fullName: data.fullName || null,
+        phone: data.phone || null,
+        email: data.email || null,
+        messages: data.messages,
+        device
+      }
+    });
+    return { success: true, data: chat };
+  } catch (error) {
+    console.error("[Action Error] AIChatSession save failed:", error);
+    return { success: false };
+  }
+}
+
+// ----------------------------------------------------
+// Server Action: Reschedule Appointment
+// ----------------------------------------------------
+export async function rescheduleAppointment(confirmationNumber: string, newDate: Date, newSlot: string) {
+  try {
+    const appointment = await prisma.appointment.update({
+      where: { confirmationNumber },
+      data: {
+        preferredDate: newDate,
+        preferredTime: newSlot
+      }
+    });
+    return { success: true, data: appointment };
+  } catch (error) {
+    console.error("[Action Error] Reschedule failed:", error);
+    return { success: false };
+  }
+}
+
+// ----------------------------------------------------
+// Server Action: Check if AI Image Key is Configured
+// ----------------------------------------------------
+export async function checkAIConfigured() {
+  const isConfigured = !!(process.env.STABILITY_API_KEY || process.env.REPLICATE_API_TOKEN || process.env.OPENAI_API_KEY);
+  return { success: true, isConfigured };
+}
+
+// ----------------------------------------------------
+// Server Action: Execute Real Stability AI Image-to-Image Generation
+// ----------------------------------------------------
+export async function visualizeRoomAction(input: {
+  roomType: string;
+  style: string;
+  budget: string;
+  materials: {
+    flooring?: string;
+    wallFinish?: string;
+    lighting?: string;
+    cabinetFinish?: string;
+  };
+  beforeImage: string; // Base64 data string
+}) {
+  try {
+    const isConfigured = !!process.env.STABILITY_API_KEY;
+    if (!isConfigured) {
+      return {
+        success: false,
+        error: "AI visualization is currently unavailable because no image generation provider has been configured."
+      };
+    }
+
+    // Convert Base64 beforeImage to a Blob and package in FormData
+    const base64Data = input.beforeImage.replace(/^data:image\/\w+;base64,/, "");
+    const buffer = Buffer.from(base64Data, "base64");
+
+    const formData = new FormData();
+    const fileBlob = new Blob([buffer], { type: "image/png" });
+    formData.append("init_image", fileBlob, "init_image.png");
+    formData.append("init_image_mode", "IMAGE_STRENGTH");
+    formData.append("image_strength", "0.35"); // 0.35 image strength preserves perspective, bounds, and structures
+
+    const promptText = `Bespoke ultra luxury finished interior of ${input.roomType} designed in a custom ${input.style} style, utilizing ${input.materials.flooring || "Carrara marble"} and ${input.materials.wallFinish || "satin paint"} wood accents. Photorealistic, 8k resolution, award-winning architectural digest photography, realistic shadows.`;
+    formData.append("text_prompts[0][text]", promptText);
+    formData.append("text_prompts[0][weight]", "1.0");
+    formData.append("cfg_scale", "7");
+    formData.append("steps", "30");
+
+    const response = await fetch("https://api.stability.ai/v1/generation/stable-diffusion-xl-1024-v1-0/image-to-image", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.STABILITY_API_KEY}`,
+        Accept: "application/json",
+      },
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const errorMsg = await response.text();
+      console.error("[Stability AI Error Response]:", errorMsg);
+      return { success: false, error: "Stability AI API request failed. Please check credentials." };
+    }
+
+    const data = await response.json();
+    if (data.artifacts && data.artifacts[0]) {
+      const afterImage = `data:image/png;base64,${data.artifacts[0].base64}`;
+
+      // Register transaction in Database
+      const headersList = await headers();
+      const userAgent = headersList.get("user-agent") || undefined;
+      const device = userAgent && /mobile/i.test(userAgent) ? "Mobile" : "Desktop";
+
+      await prisma.aIVisualization.create({
+        data: {
+          roomType: input.roomType,
+          style: input.style,
+          budget: input.budget,
+          materials: input.materials,
+          beforeImage: input.beforeImage.substring(0, 500) + "...(truncated)", // Save layout representation prefix
+          afterImage,
+          device,
+          userAgent
+        }
+      });
+
+      return { success: true, beforeImage: input.beforeImage, afterImage };
+    }
+
+    return { success: false, error: "No image artifact returned from AI model." };
+  } catch (error) {
+    console.error("[Action Error] AI Visualization failed:", error);
+    return { success: false, error: "An unexpected error occurred during rendering." };
+  }
+}
+
+// ----------------------------------------------------
+// Server Action: Execute AI Room Space Scanning Analysis
+// ----------------------------------------------------
+export async function analyzeRoomAction(roomType: string, imageBase64?: string) {
+  try {
+    const isConfigured = !!(process.env.STABILITY_API_KEY || process.env.REPLICATE_API_TOKEN || process.env.OPENAI_API_KEY);
+    if (!isConfigured) {
+      return {
+        success: false,
+        error: "AI room analysis is currently unavailable because no structural scanner provider has been configured."
+      };
+    }
+
+    const analysis = await analyzeRoomSpace(roomType, imageBase64);
+    return { success: true, analysis };
+  } catch (error) {
+    console.error("[Action Error] AI room scan failed:", error);
+    return { success: false, error: "An unexpected error occurred during structural scan." };
   }
 }

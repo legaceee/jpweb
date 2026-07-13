@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { servicesData } from "../../../lib/services-data";
+import { contactConfig, getWhatsAppLink } from "../../../lib/config";
 import { CheckCircle2, ChevronRight, Phone, FileText, ArrowRight } from "lucide-react";
 
 interface Props {
@@ -151,8 +152,8 @@ export default async function ServicePage({ params }: Props) {
               Need immediate assistance? Call our projects head directly or chat on WhatsApp.
             </p>
             <div className="space-y-2 pt-2 text-sm">
-              <p className="text-white/60">Phone: <a href="tel:+919876543210" className="text-white hover:text-primary font-semibold">+91 98765 43210</a></p>
-              <p className="text-white/60">WhatsApp: <a href="https://wa.me/919876543210" className="text-white hover:text-primary font-semibold">Chat Now</a></p>
+              <p className="text-white/60">Phone: <a href={`tel:${contactConfig.phone.replace(/[^\d+]/g, "")}`} className="text-white hover:text-primary font-semibold">{contactConfig.phone}</a></p>
+              <p className="text-white/60">WhatsApp: <a href={getWhatsAppLink("Hi JP Enterprises, I have a query about services.")} className="text-white hover:text-primary font-semibold">Chat Now</a></p>
             </div>
           </div>
         </div>

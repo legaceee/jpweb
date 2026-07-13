@@ -56,7 +56,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${playfair.variable} ${outfit.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${playfair.variable} ${outfit.variable}`}>
       <head>
         <script
           dangerouslySetInnerHTML={{

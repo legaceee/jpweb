@@ -7,6 +7,7 @@ import * as z from "zod";
 import { motion, AnimatePresence } from "framer-motion";
 import { User, Phone, Mail, MapPin, Clock, Send, CheckCircle, Loader2, MessageSquare } from "lucide-react";
 import { submitContactForm } from "../actions";
+import { contactConfig, getWhatsAppLink } from "../../lib/config";
 
 const schema = z.object({
   fullName: z.string().min(3, "Name must be at least 3 characters"),
@@ -54,29 +55,29 @@ export default function ContactPage() {
     {
       icon: <Phone className="text-primary w-6 h-6" />,
       title: "Call Us Directly",
-      details: "+91 98765 43210",
-      link: "tel:+919876543210",
+      details: contactConfig.phone,
+      link: `tel:${contactConfig.phone.replace(/[^\d+]/g, "")}`,
       linkText: "Call Now",
     },
     {
       icon: <MessageSquare className="text-primary w-6 h-6" />,
       title: "WhatsApp Chat",
-      details: "+91 98765 43210",
-      link: "https://wa.me/919876543210",
+      details: contactConfig.whatsapp,
+      link: getWhatsAppLink("Hi JP Enterprises, I have a general query."),
       linkText: "Chat Now",
     },
     {
       icon: <Mail className="text-primary w-6 h-6" />,
       title: "Email Assistance",
-      details: "info@jpenterprises.com",
-      link: "mailto:info@jpenterprises.com",
+      details: contactConfig.email,
+      link: `mailto:${contactConfig.email}`,
       linkText: "Send Mail",
     },
     {
       icon: <MapPin className="text-primary w-6 h-6" />,
       title: "Office Headquarters",
-      details: "MG Road, Camp, Pune, MH",
-      link: "https://maps.google.com/?q=MG+Road+Camp+Pune",
+      details: contactConfig.address,
+      link: `https://maps.google.com/?q=${encodeURIComponent(contactConfig.address)}`,
       linkText: "Directions",
     },
   ];

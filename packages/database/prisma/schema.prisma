@@ -15,18 +15,22 @@ enum LeadStatus {
 }
 
 model Appointment {
-  id            String     @id @default(uuid())
-  fullName      String
-  phone         String
-  email         String
-  address       String
-  preferredDate DateTime
-  preferredTime String     // e.g. "Morning", "Afternoon"
-  service       String     // e.g. "Interior Design", "Civil Contracting"
-  message       String?
-  status        LeadStatus @default(PENDING)
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
+  id                 String     @id @default(uuid())
+  fullName           String
+  phone              String
+  email              String
+  address            String
+  preferredDate      DateTime
+  preferredTime      String     // e.g. "Morning", "Afternoon", "Evening"
+  service            String     // e.g. "Interior Design", "Civil Contracting"
+  message            String?
+  confirmationNumber String     @unique
+  source             String     @default("web")
+  device             String?
+  userAgent          String?
+  status             LeadStatus @default(PENDING)
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
 }
 
 model QuotationRequest {
@@ -56,5 +60,62 @@ model ContactForm {
 model Newsletter {
   id        String   @id @default(uuid())
   email     String   @unique
+  createdAt DateTime @default(now())
+}
+
+model AIReport {
+  id                String   @id @default(uuid())
+  fullName          String
+  phone             String
+  email             String
+  roomType          String
+  analysisData      Json     // Space scores, dimensions, palettes
+  maintenanceIssues Json     // Dampness, cracks, paint
+  approxCost        String
+  approxTimeline    String
+  device            String?
+  userAgent         String?
+  createdAt         DateTime @default(now())
+}
+
+model AIVisualization {
+  id          String   @id @default(uuid())
+  roomType    String
+  style       String
+  budget      String
+  materials   Json
+  beforeImage String
+  afterImage  String
+  email       String?
+  phone       String?
+  device      String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+}
+
+model CostEstimate {
+  id                String   @id @default(uuid())
+  fullName          String
+  phone             String
+  email             String
+  propertyType      String
+  area              Int
+  budgetTier        String
+  location          String
+  services          String   // Comma-separated list
+  estimatedCost     String
+  estimatedTimeline String
+  device            String?
+  userAgent         String?
+  createdAt         DateTime @default(now())
+}
+
+model AIChatSession {
+  id        String   @id @default(uuid())
+  fullName  String?
+  phone     String?
+  email     String?
+  messages  Json
+  device    String?
   createdAt DateTime @default(now())
 }
