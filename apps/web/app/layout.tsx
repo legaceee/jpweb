@@ -3,7 +3,8 @@ import { Playfair_Display, Outfit } from "next/font/google";
 import "./globals.css";
 import Navbar from "../components/navbar";
 import Footer from "../components/footer";
-import WhatsAppFloat from "../components/whatsapp-float";
+import FloatingContactBar from "../components/floating-contact-bar";
+import CustomCursor from "../components/custom-cursor";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -56,13 +57,32 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${playfair.variable} ${outfit.variable}`}>
-      <body className="bg-dark text-light antialiased selection:bg-primary selection:text-dark">
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var saved = localStorage.getItem('theme');
+                  if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    document.documentElement.classList.add('dark');
+                  } else {
+                    document.documentElement.classList.remove('dark');
+                  }
+                } catch (e) {}
+              })();
+            `
+          }}
+        />
+      </head>
+      <body className="bg-bg text-fg antialiased selection:bg-primary selection:text-card">
+        <CustomCursor />
         <Navbar />
         <div className="min-h-screen flex flex-col pt-20">
           <main className="flex-grow">{children}</main>
         </div>
         <Footer />
-        <WhatsAppFloat />
+        <FloatingContactBar />
       </body>
     </html>
   );

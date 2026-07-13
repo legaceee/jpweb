@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { Mail, Phone, MapPin, Clock, Send } from "lucide-react";
+import { Mail, Phone, MapPin, Clock } from "lucide-react";
 import { FaFacebookF, FaInstagram, FaLinkedinIn } from "react-icons/fa";
+import { contactConfig } from "../lib/config";
 
 export default function Footer() {
   return (
@@ -41,15 +42,15 @@ export default function Footer() {
           <ul className="space-y-4 text-sm font-light">
             <li className="flex items-start space-x-3">
               <MapPin size={18} className="text-primary shrink-0 mt-0.5" />
-              <span>JP Enterprises HQ, MG Road, Camp, Pune, Maharashtra 411001</span>
+              <span>{contactConfig.address}</span>
             </li>
             <li className="flex items-center space-x-3">
               <Phone size={18} className="text-primary shrink-0" />
-              <a href="tel:+919876543210" className="hover:text-primary">+91 98765 43210</a>
+              <a href={`tel:${contactConfig.phone}`} className="hover:text-primary">{contactConfig.phone}</a>
             </li>
             <li className="flex items-center space-x-3">
               <Mail size={18} className="text-primary shrink-0" />
-              <a href="mailto:info@jpenterprises.com" className="hover:text-primary">info@jpenterprises.com</a>
+              <a href={`mailto:${contactConfig.email}`} className="hover:text-primary">{contactConfig.email}</a>
             </li>
             <li className="flex items-start space-x-3">
               <Clock size={18} className="text-primary shrink-0 mt-0.5" />

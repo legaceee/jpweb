@@ -1,15 +1,12 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #C5A880; /* Luxe Bronze Gold */
-  --color-primary-hover: #B4966E;
-  --color-dark: #121212; /* Rich Charcoal */
-  --color-dark-light: #1E1E1E; /* Lighter Charcoal */
-  --color-dark-muted: #2A2A2A;
-  --color-light: #FAFAFA; /* Premium Off-white */
-  --color-light-dark: #EAEAEA;
-  --color-luxury-gold: #D4AF37;
-  --color-bronze: #8C6239;
+  --color-primary: var(--accent);
+  --color-primary-hover: var(--accent-hover);
+  --color-bg: var(--background);
+  --color-fg: var(--foreground);
+  --color-card: var(--card-bg);
+  --color-border: var(--card-border);
   
   --font-serif: var(--font-playfair), Georgia, serif;
   --font-sans: var(--font-outfit), sans-serif;
@@ -47,15 +44,23 @@
 }
 
 :root {
-  --background: #FAFAFA;
-  --foreground: #121212;
+  --background: #FCFCFA; /* Premium soft bone-white */
+  --foreground: #1C1C1A; /* Charcoal off-black */
+  --card-bg: #FFFFFF;
+  --card-border: rgba(0, 0, 0, 0.06);
+  --accent: #A68050; /* Rich bronze-gold (optimal contrast for light bg) */
+  --accent-hover: #8F6A3D;
   --font-playfair: 'Playfair Display', serif;
   --font-outfit: 'Outfit', sans-serif;
 }
 
 .dark {
-  --background: #121212;
-  --foreground: #FAFAFA;
+  --background: #121212; /* Deep carbon black */
+  --foreground: #FAFAFA; /* Off-white ivory */
+  --card-bg: #1A1A1A;
+  --card-border: rgba(255, 255, 255, 0.07);
+  --accent: #C5A880; /* Luxe champagne gold */
+  --accent-hover: #B4966E;
 }
 
 html {
@@ -67,6 +72,7 @@ body {
   background-color: var(--background);
   font-family: var(--font-outfit), sans-serif;
   overflow-x: hidden;
+  transition: background-color 0.4s ease, color 0.4s ease;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -103,11 +109,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .luxury-card-shadow {
-  box-shadow: 0 10px 30px -15px rgba(140, 98, 57, 0.15);
+  box-shadow: 0 10px 30px -15px rgba(140, 98, 57, 0.1);
 }
 
 .luxury-card-shadow:hover {
-  box-shadow: 0 20px 45px -10px rgba(140, 98, 57, 0.25);
+  box-shadow: 0 20px 45px -10px rgba(140, 98, 57, 0.18);
 }
 
 /* Hide default scrollbar */
@@ -116,14 +122,21 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 ::-webkit-scrollbar-track {
-  background: #121212;
+  background: var(--background);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #C5A880;
+  background: var(--accent);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #B4966E;
+  background: var(--accent-hover);
+}
+
+/* Hide default cursor on desktop when custom cursor active */
+@media (min-width: 1024px) {
+  body, a, button, select, input, textarea, label, [role="button"], option {
+    cursor: none !important;
+  }
 }

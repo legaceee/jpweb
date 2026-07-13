@@ -2,417 +2,415 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Phone, FileText, ArrowRight, CheckCircle2, Star, Award, Building, HardHat, Compass } from "lucide-react";
-import { FaWhatsapp } from "react-icons/fa";
+import { Phone, FileText, ArrowRight, Star, Award, Building, HardHat, Compass, ShieldCheck, MapPin, CheckCircle2 } from "lucide-react";
+import { FaWhatsapp, FaGoogle } from "react-icons/fa";
+
+// Import central configurations and WhatsApp link helper
+import { contactConfig, getWhatsAppLink } from "../lib/config";
+
+// Import redesigned premium components
+import BeforeAfterSlider from "../components/before-after-slider";
+import InteriorVisualizer from "../components/interior-visualizer";
+import ProjectCarousel from "../components/project-carousel";
+import CostEstimator from "../components/cost-estimator";
+import SearchableFAQ from "../components/searchable-faq";
+import BrochureCta from "../components/brochure-cta";
 
 const stats = [
-  { value: "500+", label: "Projects Completed" },
-  { value: "12+", label: "Years Experience" },
-  { value: "5-Year", label: "Woodwork Warranty" },
-  { value: "99.8%", label: "Client Satisfaction" },
+  { value: "500+", label: "Completed Projects" },
+  { value: "12+", label: "Years of Craft" },
+  { value: "4", label: "Cities Serviced" },
+  { value: "100%", label: "Client Satisfaction" },
 ];
 
-const featuredServices = [
-  {
-    icon: <Compass className="text-primary w-6 h-6" />,
-    title: "Interior Design",
-    slug: "interior-design",
-    description: "Bespoke spatial design, custom modular woodwork, ceiling art, and luxury color textures tailored to you.",
-  },
-  {
-    icon: <Building className="text-primary w-6 h-6" />,
-    title: "Civil Contracting",
-    slug: "civil-contracting",
-    description: "Solid foundational work, structural columns concrete castings, brick laying, and site engineering.",
-  },
-  {
-    icon: <HardHat className="text-primary w-6 h-6" />,
-    title: "Turnkey Contracting",
-    slug: "turnkey-projects",
-    description: "End-to-end design and construction responsibility from vacant land excavation to ready-to-move keys.",
-  },
+const partnerBrands = [
+  "Blum Hardware", "Hettich", "Saint-Gobain Glass", "Asian Paints", "Berger Paints", "Kohler Fittings", "Jaquar Bath"
 ];
 
-const chooseReasons = [
-  { title: "Certified Engineers", desc: "Our team includes government-certified structural engineers and gold-medalist design consultants." },
-  { title: "Transparent Pricing", desc: "Itemized spreadsheets and zero cost-overrun contracts signed prior to project execution." },
-  { title: "Premium Materials", desc: "We use laboratory-tested concrete, TMT reinforcement steel, and IS 710 BWR Marine Plywood." },
-  { title: "On-Time Handover", desc: "Strict milestones with delay penalty clauses built directly into our design-build agreements." },
+const cities = [
+  { name: "Pune", status: "Active HQ", desc: "Full contracting, construction & interior layout design." },
+  { name: "Mumbai", status: "Operational", desc: "Turnkey premium residential interior designs." },
+  { name: "Bangalore", status: "Operational", desc: "Modular woodwork and commercial layouts." },
+  { name: "Nashik", status: "Active Site", desc: "Civil excavation & raw concrete casting." }
 ];
 
-const processSteps = [
-  { num: "01", name: "Consultation", desc: "Discussing layout requirements, aesthetics, and budget allocations." },
-  { num: "02", name: "Site Visit", desc: "Laser-guided dimension scanning, level check, and soil analysis check." },
-  { num: "03", name: "Quotation", desc: "Itemized commercial breakdowns and proposed material specifications." },
-  { num: "04", name: "Design Rendering", desc: "Delivering detailed AutoCAD drawings and virtual 3D rendering views." },
-  { num: "05", name: "Execution", desc: "On-site construction and installation managed by dedicated project engineers." },
-  { num: "06", name: "Handover", desc: "Deep post-construction cleaning and layout walkthrough prior to keys delivery." },
+const projectStories = [
+  {
+    title: "Double-Height Luxury Lounge",
+    client: "Villa 42, Kalyani Nagar",
+    timeline: "75 Days",
+    challenge: "Uneven load distribution across a sloping site foundation, requiring customized structural reinforcements while maintaining high-ceiling open space templates.",
+    solution: "Poured structural steel columns inside concrete framing combined with a light cantilevered composite wooden rafter ceiling to create a rigid, open interior.",
+    outcome: "A double-height structural masterpiece featuring raw Italian marble flooring and custom integrated ambient grid lights completed 5 days ahead of schedule.",
+    beforeImg: "/images/civil_construction.png",
+    afterImg: "/images/hero_bg.png"
+  },
+  {
+    title: "Corporate Workstation",
+    client: "Veritas IT, Baner",
+    timeline: "90 Days",
+    challenge: "High acoustic echo profiles and lack of natural lighting access throughout deep internal corridor partition grids.",
+    solution: "Engineered drywall partition walls with soundproof fiberglass cores, layered with acoustic panel frames and warm linear ceiling profiles.",
+    outcome: "A low-noise corporate layout space housing modular desks and ergonomic conference cabins, verified at STC-52 soundproofing grade.",
+    beforeImg: "/images/civil_construction.png",
+    afterImg: "/images/commercial_office.png"
+  }
 ];
 
 const testimonials = [
   {
-    name: "Rajesh Sen",
-    role: "Villa Owner",
+    name: "Dr. Sandeep Kulkarni",
+    role: "Villa Proprietor",
     location: "Kalyani Nagar, Pune",
-    quote: "JP Enterprises handled both our building's RCC construction and our interior wood paneling. Having a single contracting company do structural and finish work saved us huge coordination overhead and the quality is outstanding.",
+    quote: "JP Enterprises executed a flawless civil design-build. Their structural concrete pouring was completed with extreme accuracy, and the wood layouts and marble finish turned our lounge space into a timeless masterwork.",
     rating: 5,
+    date: "2 weeks ago"
   },
   {
-    name: "Ananya Mehta",
+    name: "Meera Ranade",
     role: "Penthouse Owner",
-    location: "Koregaon Park, Pune",
-    quote: "The modular kitchen cabinetry and custom glass wardrobes they built feel incredibly premium. German soft-close accessories, flawless acrylic finishes, and excellent after-sales maintenance support.",
+    location: "Aundh, Pune",
+    quote: "We loved selecting custom wall paint colors and parquet profiles on their material visualizer. The actual modular wardrobe units and bathroom trims look identical to their design configurations.",
     rating: 5,
-  },
-];
-
-const faqs = [
-  { q: "Do you charge for the initial consultation and site visits?", a: "Our preliminary telephone consultation is free. If a physical site visit, structural level assessment, and custom laser measurement is required, a nominal fee is charged, which is fully adjusted against the final design contract." },
-  { q: "How do you ensure the quality of materials during civil construction?", a: "We purchase steel, cement, and piping directly from authorized brand distributors. We provide cube compression test laboratory reports for concrete cast on-site and material invoice logs to clients." },
-  { q: "What is your warranty policy on interior woodworking?", a: "We offer a 5-year warranty on all modular cabinetry, including termites protection and laminate delamination, alongside manufacturing guarantees for Hettich/Blum hardware." },
+    date: "1 month ago"
+  }
 ];
 
 export default function Home() {
+  const whatsappUrl = getWhatsAppLink("Hi JP Enterprises, I would like to schedule a site consultation.");
+
   return (
-    <div className="bg-[#121212] min-h-screen text-white/90">
+    <div className="bg-bg text-fg min-h-screen transition-colors duration-300">
       
-      {/* 1. HERO SECTION */}
-      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden pt-12">
-        {/* Background Image & Overlay */}
+      {/* 1. EDITORIAL HERO SECTION */}
+      <section className="relative min-h-screen flex items-center justify-center pt-24 pb-12 overflow-hidden">
+        {/* Cinematic Backdrop Layer */}
         <div className="absolute inset-0 z-0">
           <img
             src="/images/hero_bg.png"
-            alt="Premium Interior Design"
-            className="w-full h-full object-cover opacity-35 scale-102"
+            alt="JP Enterprises Premium Space"
+            className="w-full h-full object-cover opacity-25 dark:opacity-35"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#121212] via-[#121212]/80 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/85 to-transparent"></div>
         </div>
 
-        {/* Hero Content */}
-        <div className="relative z-10 max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center pt-16">
-          <div className="lg:col-span-8 space-y-6">
-            
-            {/* Tagline Badge */}
-            <motion.div
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="inline-flex items-center space-x-2 bg-primary/10 border border-primary/20 px-3.5 py-1.5 rounded-full text-xs text-primary font-semibold tracking-wider uppercase uppercase-letter"
-            >
-              <Award size={14} />
-              <span>Timeless Design &amp; Precision Engineering</span>
-            </motion.div>
+        {/* Ambient Overlay lines for architectural feel */}
+        <div className="absolute inset-y-0 left-10 md:left-24 w-px bg-border/20 z-10" />
+        <div className="absolute inset-y-0 right-10 md:right-24 w-px bg-border/20 z-10" />
 
-            {/* Main Headline */}
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.15 }}
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-serif font-bold text-white leading-tight"
-            >
-              Crafting Luxury Interiors <br />
-              <span className="gold-text-gradient font-light">&amp; Solid Structures</span>
-            </motion.h1>
-
-            {/* Subheadline */}
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.3 }}
-              className="text-base sm:text-lg text-white/70 leading-relaxed font-light max-w-2xl"
-            >
-              JP Enterprises brings together premium architecture, luxurious interior woodworking, and heavy civil contracting to deliver production-ready homes and corporate structures.
-            </motion.p>
-
-            {/* Call To Actions */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.45 }}
-              className="flex flex-wrap gap-4 pt-4"
-            >
-              <Link
-                href="/book"
-                className="bg-primary hover:bg-primary-hover text-dark px-7 py-4 rounded-xl text-xs font-bold uppercase tracking-wider transition-all flex items-center space-x-2 border border-primary/20 shadow-lg hover:scale-105"
-              >
-                <Phone size={13} />
-                <span>Book Site Inspection</span>
-              </Link>
-              <Link
-                href="/quote"
-                className="bg-transparent border border-white/20 hover:border-white/50 text-white px-7 py-4 rounded-xl text-xs font-bold uppercase tracking-wider transition-all flex items-center space-x-2 hover:bg-white/5"
-              >
-                <FileText size={13} />
-                <span>Get Cost Estimate</span>
-              </Link>
-              <a
-                href="https://wa.me/919876543210"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-white/5 hover:bg-white/10 text-white px-7 py-4 rounded-xl text-xs font-bold uppercase tracking-wider transition-all flex items-center space-x-2 border border-white/10"
-              >
-                <FaWhatsapp className="text-[#25D366] w-4 h-4" />
-                <span>WhatsApp Desk</span>
-              </a>
-            </motion.div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* 2. STATS SECTION */}
-      <section className="bg-[#1A1A1A] py-12 border-y border-white/5">
-        <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-          {stats.map((stat, idx) => (
-            <div key={idx} className="space-y-1">
-              <h3 className="font-serif text-3xl md:text-4xl text-primary font-bold">{stat.value}</h3>
-              <p className="text-white/50 text-xs font-light tracking-wide uppercase">{stat.label}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* 3. SERVICES SECTION */}
-      <section className="py-24 px-6 max-w-7xl mx-auto space-y-16">
-        <div className="text-center space-y-3">
-          <span className="text-primary text-xs font-semibold tracking-widest uppercase block">Our Scope</span>
-          <h2 className="text-3xl md:text-4xl font-serif font-semibold text-white">Bespoke Design-Build Services</h2>
-          <p className="text-sm text-white/50 font-light max-w-md mx-auto">
-            From modern residential layout detailing to heavy concrete framing and structural civil engineering projects.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {featuredServices.map((serv, idx) => (
-            <div
-              key={idx}
-              className="bg-[#1A1A1A] border border-white/5 p-8 rounded-2xl flex flex-col justify-between hover:border-primary/20 transition-all duration-300 shadow-xl"
-            >
-              <div className="space-y-4">
-                <div className="p-3 bg-[#121212] rounded-xl w-fit">{serv.icon}</div>
-                <h3 className="font-serif text-xl text-white font-semibold">{serv.title}</h3>
-                <p className="text-sm text-white/60 leading-relaxed font-light">{serv.description}</p>
-              </div>
-              <Link
-                href={`/services/${serv.slug}`}
-                className="text-xs text-primary font-semibold tracking-wider uppercase mt-8 flex items-center space-x-1 hover:text-white transition-colors"
-              >
-                <span>Read Service Details</span>
-                <ArrowRight size={12} />
-              </Link>
-            </div>
-          ))}
-        </div>
-
-        {/* View All Services CTA */}
-        <div className="text-center pt-4">
-          <p className="text-xs text-white/40 font-light">
-            Need customized jobs? We also specialize in{" "}
-            <Link href="/services/modular-kitchen" className="text-primary hover:underline">Modular Kitchens</Link>,{" "}
-            <Link href="/services/false-ceiling" className="text-primary hover:underline">Ceiling Work</Link>,{" "}
-            <Link href="/services/painting" className="text-primary hover:underline">Painting</Link>, and{" "}
-            <Link href="/services/flooring" className="text-primary hover:underline">Flooring</Link>.
-          </p>
-        </div>
-      </section>
-
-      {/* 4. WHY CHOOSE SECTION */}
-      <section className="bg-[#1A1A1A] py-24 px-6">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          {/* Text and Badges */}
-          <div className="lg:col-span-5 space-y-6">
-            <span className="text-primary text-xs font-semibold tracking-widest uppercase block">Why Us</span>
-            <h2 className="text-3xl md:text-4xl font-serif font-semibold text-white leading-tight">
-              Engineering Trust <br />&amp; Crafting Excellence
-            </h2>
-            <p className="text-sm text-white/70 leading-relaxed font-light">
-              For over a decade, JP Enterprises has committed to providing uncompromising quality. We build frameworks to stand for decades and interiors that define luxury.
-            </p>
-            <div className="pt-4 space-y-3">
-              <div className="flex items-center space-x-3 text-sm text-white/80">
-                <CheckCircle2 className="text-primary shrink-0" size={16} />
-                <span>Zero Cost Overruns Guarantee</span>
-              </div>
-              <div className="flex items-center space-x-3 text-sm text-white/80">
-                <CheckCircle2 className="text-primary shrink-0" size={16} />
-                <span>5-Year Comprehensive Wood Warranty</span>
-              </div>
-              <div className="flex items-center space-x-3 text-sm text-white/80">
-                <CheckCircle2 className="text-primary shrink-0" size={16} />
-                <span>Government-Approved Materials Log</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Cards Grid */}
-          <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {chooseReasons.map((reason, idx) => (
-              <div
-                key={idx}
-                className="bg-[#121212] p-6 rounded-2xl border border-white/5 space-y-2 hover:border-primary/20 transition-all shadow-md"
-              >
-                <h3 className="font-serif text-base font-semibold text-white">{reason.title}</h3>
-                <p className="text-xs text-white/50 leading-relaxed font-light">{reason.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 5. PORTFOLIO PREVIEW */}
-      <section className="py-24 px-6 max-w-7xl mx-auto space-y-16">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6">
-          <div className="space-y-3">
-            <span className="text-primary text-xs font-semibold tracking-widest uppercase block">Projects</span>
-            <h2 className="text-3xl md:text-4xl font-serif font-semibold text-white">Our Masterwork Portfolio</h2>
-          </div>
-          <Link
-            href="/portfolio"
-            className="bg-transparent border border-white/20 hover:border-primary/30 text-white px-5 py-3 rounded-lg text-xs font-bold uppercase tracking-wider transition-all flex items-center space-x-2 hover:bg-white/5"
+        {/* Copy */}
+        <div className="relative z-20 max-w-7xl mx-auto px-6 text-center space-y-8 mt-12">
+          
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="inline-flex items-center space-x-2 bg-primary/10 border border-primary/20 px-4.5 py-1.8 rounded-full text-[10px] text-primary font-bold tracking-widest uppercase"
           >
-            <span>Explore All Projects</span>
-            <ArrowRight size={13} />
-          </Link>
-        </div>
+            <Award size={13} />
+            <span>Premium Interior Design &amp; Turnkey Contracting</span>
+          </motion.div>
 
-        {/* Short Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* Project 1 */}
-          <div className="group relative aspect-square bg-[#1A1A1A] border border-white/5 rounded-2xl overflow-hidden cursor-pointer">
-            <img src="/images/interior_kitchen.png" alt="Modular Kitchen" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-            <div className="absolute inset-0 bg-gradient-to-t from-dark/90 via-dark/20 to-transparent flex flex-col justify-end p-6">
-              <span className="text-primary text-[10px] uppercase font-bold tracking-wider">Interior</span>
-              <h3 className="font-serif text-lg text-white font-semibold pt-1">Bespoke Modular Kitchen</h3>
-            </div>
-          </div>
-
-          {/* Project 2 */}
-          <div className="group relative aspect-square bg-[#1A1A1A] border border-white/5 rounded-2xl overflow-hidden cursor-pointer">
-            <img src="/images/civil_construction.png" alt="Civil Construction" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-            <div className="absolute inset-0 bg-gradient-to-t from-dark/90 via-dark/20 to-transparent flex flex-col justify-end p-6">
-              <span className="text-primary text-[10px] uppercase font-bold tracking-wider">Civil</span>
-              <h3 className="font-serif text-lg text-white font-semibold pt-1">Commercial Structure Framing</h3>
-            </div>
-          </div>
-
-          {/* Project 3 */}
-          <div className="group relative aspect-square bg-[#1A1A1A] border border-white/5 rounded-2xl overflow-hidden cursor-pointer">
-            <img src="/images/interior_bedroom.png" alt="Bedroom Suite" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-            <div className="absolute inset-0 bg-gradient-to-t from-dark/90 via-dark/20 to-transparent flex flex-col justify-end p-6">
-              <span className="text-primary text-[10px] uppercase font-bold tracking-wider">Residential</span>
-              <h3 className="font-serif text-lg text-white font-semibold pt-1">Luxury Master Bedroom</h3>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 6. PROCESS TIMELINE ROADMAP */}
-      <section className="bg-[#1A1A1A] py-24 px-6">
-        <div className="max-w-7xl mx-auto space-y-16">
-          <div className="text-center space-y-3">
-            <span className="text-primary text-xs font-semibold tracking-widest uppercase block">Our Method</span>
-            <h2 className="text-3xl md:text-4xl font-serif font-semibold text-white">Execution Process Roadmap</h2>
-            <p className="text-sm text-white/50 font-light max-w-md mx-auto">
-              How we guide your project from first introductory details to final key handover.
-            </p>
-          </div>
-
-          {/* Grid Process */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {processSteps.map((step, idx) => (
-              <div
-                key={idx}
-                className="bg-[#121212] p-8 rounded-2xl border border-white/5 space-y-4 hover:border-primary/20 transition-all shadow-md relative"
-              >
-                <div className="font-serif text-3xl text-primary/30 font-bold">{step.num}</div>
-                <h3 className="font-serif text-lg text-white font-semibold">{step.name}</h3>
-                <p className="text-xs text-white/50 leading-relaxed font-light">{step.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 7. TESTIMONIALS */}
-      <section className="py-24 px-6 max-w-5xl mx-auto space-y-12">
-        <div className="text-center space-y-2">
-          <span className="text-primary text-xs font-semibold tracking-widest uppercase block">Testimonials</span>
-          <h2 className="text-3xl font-serif font-bold text-white">What Our Clients Say</h2>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {testimonials.map((test, idx) => (
-            <div
-              key={idx}
-              className="bg-[#1A1A1A] border border-white/5 p-8 rounded-2xl shadow-xl flex flex-col justify-between"
+          <div className="space-y-4">
+            <motion.h1
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-serif font-bold text-foreground tracking-tight leading-tight"
             >
-              <div className="space-y-4">
-                <div className="flex space-x-1 text-primary">
-                  {[...Array(test.rating)].map((_, i) => (
-                    <Star key={i} size={15} fill="currentColor" />
-                  ))}
-                </div>
-                <p className="text-sm text-white/70 italic leading-relaxed font-light">
-                  "{test.quote}"
-                </p>
-              </div>
-              <div className="border-t border-white/5 pt-6 mt-6 flex justify-between items-center text-xs">
-                <div>
-                  <h4 className="font-semibold text-white">{test.name}</h4>
-                  <p className="text-white/40 font-light pt-0.5">{test.role}</p>
-                </div>
-                <span className="text-white/35 font-light">{test.location}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* 8. FAQ ACCORDION */}
-      <section className="py-24 px-6 max-w-4xl mx-auto space-y-12">
-        <h2 className="text-3xl font-serif font-semibold text-white text-center">Frequently Asked Questions</h2>
-        <div className="space-y-4 bg-[#1A1A1A] p-8 rounded-2xl border border-white/5">
-          {faqs.map((faq, idx) => (
-            <details
-              key={idx}
-              className="group border-b border-white/5 pb-4 last:border-0 [&_summary::-webkit-details-marker]:hidden"
-            >
-              <summary className="flex justify-between items-center cursor-pointer text-white/90 hover:text-primary transition-colors py-2 font-medium">
-                <span className="text-sm md:text-base pr-4">{faq.q}</span>
-                <span className="text-primary shrink-0 transition-transform duration-200 group-open:rotate-180">
-                  ▼
-                </span>
-              </summary>
-              <p className="mt-2 text-white/60 text-xs md:text-sm leading-relaxed font-light pl-2">
-                {faq.a}
-              </p>
-            </details>
-          ))}
-        </div>
-      </section>
-
-      {/* 9. FINAL CTA */}
-      <section className="max-w-7xl mx-auto px-6 pb-24">
-        <div className="bg-gradient-to-r from-primary/10 via-bronze/10 to-transparent border border-white/5 rounded-3xl p-12 text-center md:text-left flex flex-col md:flex-row md:items-center md:justify-between gap-8 shadow-2xl">
-          <div className="space-y-3">
-            <h3 className="font-serif text-3xl text-white">Create your landmark with JP Enterprises</h3>
-            <p className="text-sm text-white/60 font-light max-w-xl">
-              Get an accurate budget estimation report or arrange a structural/interior site visit with our chief engineer today.
-            </p>
+              Timeless Spaces <br />
+              <span className="italic font-light text-primary">Precision Built</span>
+            </motion.h1>
           </div>
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
+
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-sm sm:text-base md:text-lg text-foreground/75 leading-relaxed font-light max-w-3xl mx-auto"
+          >
+            We construct luxury residential properties, craft premium modular wood cabinetry, and execute engineered commercial interiors across India.
+          </motion.p>
+
+          {/* Environmental Variable Driven Actions */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex flex-wrap items-center justify-center gap-4 pt-4"
+          >
             <Link
               href="/book"
-              className="bg-primary hover:bg-primary-hover text-dark px-6 py-3.5 rounded-lg text-xs font-semibold uppercase tracking-wider text-center transition-all inline-flex items-center justify-center space-x-2"
+              className="bg-primary hover:bg-primary-hover text-card px-8 py-4 rounded-xl text-xs font-bold uppercase tracking-widest transition-all flex items-center space-x-2 border border-primary/20 hover:scale-105 shadow-xl"
             >
+              <Phone size={13} />
               <span>Book Appointment</span>
+            </Link>
+            <Link
+              href="/quote"
+              className="bg-card border border-border hover:border-foreground/30 text-foreground px-8 py-4 rounded-xl text-xs font-bold uppercase tracking-widest transition-all flex items-center space-x-2 hover:scale-105"
+            >
+              <FileText size={13} />
+              <span>Request Free Quote</span>
+            </Link>
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-[#25D366]/10 hover:bg-[#25D366]/20 border border-[#25D366]/30 text-foreground px-8 py-4 rounded-xl text-xs font-bold uppercase tracking-widest transition-all flex items-center space-x-2 hover:scale-105"
+            >
+              <FaWhatsapp className="text-[#25D366] w-4.5 h-4.5" />
+              <span>Chat on WhatsApp</span>
+            </a>
+          </motion.div>
+        </div>
+
+        {/* Scroll Indicator */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center space-y-2 z-20">
+          <span className="text-[9px] text-foreground/30 uppercase tracking-widest font-semibold">Scroll to Estimator</span>
+          <div className="w-5 h-9 border-2 border-border/20 rounded-full flex justify-center p-1">
+            <div className="w-1 h-1.5 bg-primary rounded-full animate-scroll-down" />
+          </div>
+        </div>
+      </section>
+
+      {/* 2. CORE STATS */}
+      <section className="bg-card py-16 border-y border-border relative z-20">
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-10 text-center">
+          {stats.map((stat, idx) => (
+            <div key={idx} className="space-y-1">
+              <h3 className="font-serif text-3xl md:text-5xl text-primary font-bold">{stat.value}</h3>
+              <p className="text-foreground/40 text-[10px] font-bold tracking-widest uppercase">{stat.label}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* 3. DYNAMIC ESTIMATOR SECTION */}
+      <section className="py-24 px-6 max-w-7xl mx-auto relative z-20" id="calculator">
+        <CostEstimator />
+      </section>
+
+      {/* 4. ASYMMETRICAL PROJECT STORIES SECTION */}
+      <section className="py-24 px-6 bg-card border-y border-border relative z-20">
+        <div className="max-w-7xl mx-auto space-y-20">
+          <div className="text-center space-y-3">
+            <span className="text-primary text-[10px] font-bold tracking-widest uppercase block">Bespoke Case Files</span>
+            <h2 className="text-3xl md:text-5xl font-serif font-bold text-foreground">Project Case Stories</h2>
+            <p className="text-sm text-foreground/50 font-light max-w-md mx-auto">
+              Real-world structural engineering solutions and modular interior designs we created.
+            </p>
+          </div>
+
+          <div className="space-y-24">
+            {projectStories.map((story, idx) => (
+              <div
+                key={idx}
+                className={`grid grid-cols-1 lg:grid-cols-12 gap-10 items-center ${
+                  idx % 2 === 0 ? "" : "lg:flex-row-reverse"
+                }`}
+              >
+                {/* Images (Asymmetrical Grid) */}
+                <div className={`lg:col-span-7 grid grid-cols-2 gap-4 ${idx % 2 === 0 ? "order-1" : "order-1 lg:order-2"}`}>
+                  <div className="space-y-2">
+                    <span className="text-[10px] text-foreground/40 font-semibold uppercase block text-center">Before (Site Frame)</span>
+                    <div className="aspect-[4/3] rounded-2xl overflow-hidden border border-border">
+                      <img src={story.beforeImg} alt="Before Raw Construction" className="w-full h-full object-cover" />
+                    </div>
+                  </div>
+                  <div className="space-y-2 mt-6 lg:mt-12">
+                    <span className="text-primary text-[10px] font-semibold uppercase block text-center">After (Completed Build)</span>
+                    <div className="aspect-[4/3] rounded-2xl overflow-hidden border border-primary/20 shadow-xl">
+                      <img src={story.afterImg} alt="Completed Finished Interior" className="w-full h-full object-cover" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Case details */}
+                <div className={`lg:col-span-5 space-y-6 ${idx % 2 === 0 ? "order-2" : "order-2 lg:order-1"}`}>
+                  <span className="text-[10px] bg-primary/10 text-primary border border-primary/20 px-3 py-1 rounded-full uppercase tracking-wider font-bold w-fit block">
+                    Timeline: {story.timeline}
+                  </span>
+                  <h3 className="font-serif text-2xl md:text-3xl text-foreground font-bold leading-snug">
+                    {story.title}
+                  </h3>
+                  
+                  <div className="space-y-4">
+                    <div className="border-l-2 border-red-500/30 pl-4 space-y-1">
+                      <h4 className="text-[10px] text-red-500 font-bold uppercase tracking-wider">The Challenge</h4>
+                      <p className="text-xs text-foreground/60 leading-relaxed font-light">{story.challenge}</p>
+                    </div>
+                    
+                    <div className="border-l-2 border-primary/30 pl-4 space-y-1">
+                      <h4 className="text-[10px] text-primary font-bold uppercase tracking-wider">The Solution</h4>
+                      <p className="text-xs text-foreground/60 leading-relaxed font-light">{story.solution}</p>
+                    </div>
+
+                    <div className="border-l-2 border-green-500/30 pl-4 space-y-1">
+                      <h4 className="text-[10px] text-green-500 font-bold uppercase tracking-wider">The Outcome</h4>
+                      <p className="text-xs text-foreground/60 leading-relaxed font-light">{story.outcome}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 5. INTERIOR STYLE & MATERIAL SELECTOR */}
+      <section className="py-24 px-6 max-w-7xl mx-auto space-y-16 relative z-20">
+        <div className="text-center space-y-3">
+          <span className="text-primary text-[10px] font-bold tracking-widest uppercase block">Theme Engine</span>
+          <h2 className="text-3xl md:text-5xl font-serif font-bold text-foreground">Interactive Style Configurator</h2>
+          <p className="text-sm text-foreground/50 font-light max-w-md mx-auto">
+            Swap wall tones and cabinetry accents to visualize layout material setups in real-time.
+          </p>
+        </div>
+
+        <InteriorVisualizer />
+      </section>
+
+      {/* 6. IMMERSIVE COMPLETED PROJECTS CAROUSEL */}
+      <section className="py-24 px-6 bg-card border-y border-border relative z-20">
+        <div className="max-w-7xl mx-auto space-y-16">
+          <div className="text-center space-y-3">
+            <span className="text-primary text-[10px] font-bold tracking-widest uppercase block">Gallery</span>
+            <h2 className="text-3xl md:text-5xl font-serif font-bold text-foreground">Recently Completed Builds</h2>
+            <p className="text-sm text-foreground/50 font-light max-w-md mx-auto">
+              Swipe or drag to look at exact budget figures and timelines for residential properties.
+            </p>
+          </div>
+
+          <ProjectCarousel />
+        </div>
+      </section>
+
+      {/* 7. PARTNER BRANDS & MATERIALS */}
+      <section className="py-16 bg-bg border-b border-border relative z-20">
+        <div className="max-w-7xl mx-auto px-6 space-y-8">
+          <h4 className="text-[10px] text-foreground/30 font-bold tracking-widest uppercase text-center block">
+            Authorized Material Partners
+          </h4>
+          <div className="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-60 grayscale hover:grayscale-0 transition-all duration-300">
+            {partnerBrands.map((brand, idx) => (
+              <span key={idx} className="text-xs md:text-sm font-semibold tracking-wider text-foreground font-sans">
+                {brand}
+              </span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 8. GEOGRAPHICAL SERVICE AVAILABILITY */}
+      <section className="py-24 px-6 max-w-7xl mx-auto space-y-16 relative z-20">
+        <div className="text-center space-y-3">
+          <span className="text-primary text-[10px] font-bold tracking-widest uppercase block">Geographical Coverage</span>
+          <h2 className="text-3xl md:text-5xl font-serif font-bold text-foreground">Service Locations</h2>
+          <p className="text-sm text-foreground/50 font-light max-w-md mx-auto">
+            Available across four major technology and heritage cities in India.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {cities.map((city, idx) => (
+            <div
+              key={idx}
+              className="bg-card border border-border p-6 rounded-2xl space-y-4 hover:border-primary/30 transition-colors shadow-lg"
+            >
+              <div className="flex justify-between items-start">
+                <h3 className="font-serif text-xl font-bold text-foreground">{city.name}</h3>
+                <span className="bg-primary/10 text-primary border border-primary/20 px-2 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider">
+                  {city.status}
+                </span>
+              </div>
+              <p className="text-xs text-foreground/50 leading-relaxed font-light">{city.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* 9. GOOGLE STYLE CUSTOMER REVIEWS */}
+      <section className="py-24 px-6 bg-card border-y border-border relative z-20">
+        <div className="max-w-5xl mx-auto space-y-16">
+          <div className="text-center space-y-4">
+            <span className="text-primary text-[10px] font-bold tracking-widest uppercase block">Testimonials</span>
+            <div className="flex items-center justify-center space-x-2">
+              <FaGoogle className="text-primary w-5 h-5" />
+              <h2 className="text-3xl md:text-4xl font-serif font-bold text-foreground">Google Map Reviews</h2>
+            </div>
+            <div className="flex items-center justify-center space-x-2 text-xs text-foreground/60 font-light">
+              <span className="text-primary font-bold font-sans">4.9 / 5.0 Rating</span>
+              <span>based on 124 reviews</span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {testimonials.map((test, idx) => (
+              <div
+                key={idx}
+                className="bg-bg border border-border p-8 rounded-3xl shadow-xl flex flex-col justify-between"
+              >
+                <div className="space-y-4">
+                  <div className="flex justify-between items-start">
+                    <div className="flex space-x-1 text-primary">
+                      {[...Array(test.rating)].map((_, i) => (
+                        <Star key={i} size={13} fill="currentColor" />
+                      ))}
+                    </div>
+                    <span className="text-foreground/30 text-[10px] font-light">{test.date}</span>
+                  </div>
+                  <p className="text-xs md:text-sm text-foreground/75 italic leading-relaxed font-light">
+                    "{test.quote}"
+                  </p>
+                </div>
+                <div className="border-t border-border pt-6 mt-6 flex justify-between items-center text-xs">
+                  <div>
+                    <h4 className="font-semibold text-foreground">{test.name}</h4>
+                    <p className="text-foreground/40 font-light pt-0.5">{test.role}</p>
+                  </div>
+                  <span className="text-foreground/30 font-light">{test.location}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 10. BROCHURE & NEWSLETTER SIGNUP */}
+      <section className="py-24 px-6 max-w-7xl mx-auto relative z-20">
+        <BrochureCta />
+      </section>
+
+      {/* 11. SEARCHABLE FAQ */}
+      <section className="py-24 px-6 bg-card border-y border-border relative z-20">
+        <div className="max-w-4xl mx-auto space-y-12">
+          <div className="text-center space-y-3">
+            <span className="text-primary text-[10px] font-bold tracking-widest uppercase block">Support</span>
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-foreground">Frequently Asked Questions</h2>
+          </div>
+          <SearchableFAQ />
+        </div>
+      </section>
+
+      {/* 12. CALL TO ACTION BOARD */}
+      <section className="max-w-7xl mx-auto px-6 pb-24 pt-12 relative z-20">
+        <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border border-border rounded-3xl p-12 text-center md:text-left flex flex-col md:flex-row md:items-center md:justify-between gap-8 shadow-2xl relative overflow-hidden">
+          <div className="space-y-3 relative z-10">
+            <h3 className="font-serif text-3xl md:text-4xl text-foreground font-bold">Ready to build your structure?</h3>
+            <p className="text-sm text-foreground/50 font-light max-w-xl">
+              Collaborate with our structural planners and design engineers to draft your commercial and residential projects.
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row justify-center gap-4 relative z-10">
+            <Link
+              href="/book"
+              className="bg-primary hover:bg-primary-hover text-card px-7 py-3.5 rounded-xl text-xs font-bold uppercase tracking-widest text-center transition-all inline-flex items-center justify-center space-x-2"
+            >
+              <span>Schedule Site Visit</span>
               <ArrowRight size={13} />
             </Link>
             <Link
               href="/quote"
-              className="border border-white/20 hover:border-white/50 text-white px-6 py-3.5 rounded-lg text-xs font-semibold uppercase tracking-wider text-center transition-all inline-flex items-center justify-center space-x-2 hover:bg-white/5"
+              className="border border-border hover:border-foreground/30 text-foreground px-7 py-3.5 rounded-xl text-xs font-bold uppercase tracking-widest text-center transition-all inline-flex items-center justify-center space-x-2 hover:bg-foreground/5"
             >
-              <span>Get Free Estimate</span>
+              <span>Get Cost Proposal</span>
             </Link>
           </div>
         </div>

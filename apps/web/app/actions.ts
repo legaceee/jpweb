@@ -3,6 +3,7 @@
 import { z } from "zod";
 import nodemailer from "nodemailer";
 import { prisma } from "@repo/database";
+import { contactConfig } from "../lib/config";
 
 // ----------------------------------------------------
 // Validation Schemas
@@ -137,10 +138,9 @@ export async function bookAppointment(formData: unknown) {
 
     const customerConfirmationText = `Hello ${fullName},\n\nThank you for choosing *JP Enterprises*.\n\nYour appointment for *${service}* has been received for *${dateFormatted}* during the *${preferredTime}* slot. Our engineer will contact you shortly to confirm and align site visitation.\n\nBest regards,\nJP Enterprises Team`;
 
-    // 3. Dispatch WhatsApp Logs
     // Send to business WhatsApp
     sendWhatsAppNotification({
-      phone: process.env.BUSINESS_WHATSAPP || "+919876543210",
+      phone: contactConfig.whatsapp,
       text: leadMessage,
       type: "business",
     });
@@ -187,7 +187,7 @@ export async function bookAppointment(formData: unknown) {
             <p style="font-size: 14px; color: #555555; font-weight: 300;">Our expert consultant will review your specifications and contact you to schedule a home consultation or virtual presentation.</p>
             
             <div style="margin-top: 30px; border-top: 1px solid #eaeaea; padding-top: 20px; font-size: 12px; color: #999999; font-weight: 300;">
-              <p style="margin: 0;">Have questions? Contact our projects helpline directly at <strong>+91 98765 43210</strong> or email <strong>info@jpenterprises.com</strong>.</p>
+              <p style="margin: 0;">Have questions? Contact our projects helpline directly at <strong>${contactConfig.phone}</strong> or email <strong>${contactConfig.email}</strong>.</p>
             </div>
           </div>
         </div>
@@ -245,7 +245,7 @@ export async function submitQuotationRequest(formData: unknown) {
 
     // Send business WhatsApp
     sendWhatsAppNotification({
-      phone: process.env.BUSINESS_WHATSAPP || "+919876543210",
+      phone: contactConfig.whatsapp,
       text: whatsappLeadMessage,
       type: "business",
     });
@@ -292,7 +292,7 @@ export async function submitQuotationRequest(formData: unknown) {
             <p style="font-size: 14px; color: #555555; font-weight: 300;">We will contact you with a customized design layout plan and rough commercial estimation within 48 business hours.</p>
             
             <div style="margin-top: 30px; border-top: 1px solid #eaeaea; padding-top: 20px; font-size: 12px; color: #999999; font-weight: 300;">
-              <p style="margin: 0;">Need immediate changes to your request? Call: <strong>+91 98765 43210</strong></p>
+              <p style="margin: 0;">Need immediate changes to your request? Call: <strong>${contactConfig.phone}</strong></p>
             </div>
           </div>
         </div>
