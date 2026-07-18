@@ -13,37 +13,37 @@ const conceptItems = [
   {
     label: "Interior Design",
     caption: "Living Room",
-    src: "/images/concepts/living-room.png",
+    src: "/images/concepts/living-room.webp",
     alt: "Concept visualization of a warm minimal living room with charcoal sofa and brass floor lamp",
   },
   {
     label: "Interior Design",
     caption: "Kitchen & Dining",
-    src: "/images/concepts/kitchen.png",
+    src: "/images/concepts/kitchen.webp",
     alt: "Concept visualization of a contemporary Indian kitchen with modular cabinetry",
   },
   {
     label: "Interior Design",
     caption: "Bedroom",
-    src: "/images/concepts/bedroom.png",
+    src: "/images/concepts/bedroom.webp",
     alt: "Concept visualization of a contemporary bedroom with linen headboard and layered bedding",
   },
   {
     label: "Interior Design",
     caption: "Bathroom",
-    src: "/images/concepts/bathroom.png",
+    src: "/images/concepts/bathroom.webp",
     alt: "Concept visualization of a modern bathroom with large-format tiles",
   },
   {
     label: "Interior Design",
     caption: "Hall & Entryway",
-    src: "/images/concepts/hall.png",
+    src: "/images/concepts/hall.webp",
     alt: "Concept visualization of a warm contemporary entryway with console table",
   },
   {
     label: "Civil Contracting",
     caption: "Structural Renovation",
-    src: "/images/concepts/civil.png",
+    src: "/images/concepts/civil.webp",
     alt: "Concept visualization of a residential building under renovation in Mumbai",
   },
 ];
