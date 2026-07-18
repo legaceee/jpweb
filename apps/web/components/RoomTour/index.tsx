@@ -82,6 +82,8 @@ function ProgressDots({
 export default function RoomTour() {
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollProgress = useRef(0);
+  const invalidateRef = useRef<(() => void) | null>(null);
+
   const [activeIndex, setActiveIndex] = useState(0);
   const [ctaOpacity, setCtaOpacity] = useState(0);
   const [isNearViewport, setIsNearViewport] = useState(false);
@@ -143,7 +145,7 @@ export default function RoomTour() {
     return () => observer.disconnect();
   }, [mode]);
 
-  // Handle scroll progress updates & CTA phase mapping
+  // Handle scroll progress updates & CTA phase mapping + instant R3F demand invalidation
   useEffect(() => {
     if (mode !== "webgl") return;
 
@@ -155,6 +157,11 @@ export default function RoomTour() {
 
       const progress = Math.min(Math.max(-rect.top / total, 0), 1);
       scrollProgress.current = progress;
+
+      // Immediately trigger R3F demand invalidate on scroll event
+      if (invalidateRef.current) {
+        invalidateRef.current();
+      }
 
       // Phase 1 (0.0 -> 0.85): Room travel
       const roomPhaseEnd = 0.85;
@@ -220,6 +227,7 @@ export default function RoomTour() {
           <div className="absolute inset-0">
             <RoomTourScene
               scrollProgress={scrollProgress}
+              invalidateRef={invalidateRef}
               isMobile={isMobile}
             />
           </div>
