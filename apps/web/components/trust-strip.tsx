@@ -1,18 +1,16 @@
 "use client";
 
 import { useRef, useEffect, useState } from "react";
-import { useI18n } from "../context/i18n-context";
 
 export default function TrustStrip() {
-  const { t } = useI18n();
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
   const facts = [
-    t.trust.fact1,
-    t.trust.fact2,
-    t.trust.fact3,
-    t.trust.fact4,
+    "Decades of hands-on contracting experience in Mumbai",
+    "Interior design & civil contracting under one roof",
+    "Serving homes and businesses across Mumbai",
+    "Owner-managed — single point of contact from start to finish",
   ];
 
   useEffect(() => {

@@ -4,7 +4,6 @@ import { useState, useTransition, useEffect } from "react";
 import { Phone, Mail, Send, CheckCircle2, AlertCircle, Calendar, Clock } from "lucide-react";
 import { submitAppointment, getBookedSlotsAction } from "../app/actions";
 import { contactConfig, getWhatsAppLink } from "../lib/config";
-import { useI18n } from "../context/i18n-context";
 
 interface AppointmentFormProps {
   initialService?: string;
@@ -28,7 +27,6 @@ export default function AppointmentForm({
   source = "booking",
   prefilledMessage = "",
 }: AppointmentFormProps) {
-  const { t } = useI18n();
   const [isPending, startTransition] = useTransition();
   const [submitted, setSubmitted] = useState(false);
   const [dbError, setDbError] = useState(false);
@@ -157,7 +155,7 @@ export default function AppointmentForm({
           {/* Left Context */}
           <div className="lg:col-span-2 space-y-6">
             <span className="label-text text-accent block">
-              {t.nav.bookVisit}
+              Book a Site Visit
             </span>
             <h2 className="text-3xl sm:text-4xl font-serif font-semibold text-fg leading-tight">
               Let&apos;s start with

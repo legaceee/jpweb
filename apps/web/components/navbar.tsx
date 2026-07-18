@@ -2,19 +2,15 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Menu, X, Phone, Globe, ChevronDown } from "lucide-react";
+import { Menu, X, Phone } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import ThemeToggle from "./theme-toggle";
 import { getWhatsAppLink } from "../lib/config";
-import { useI18n } from "../context/i18n-context";
-import { Language } from "../lib/i18n";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-  const [isLangOpen, setIsLangOpen] = useState(false);
-  const { lang, setLang, t } = useI18n();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 40);
@@ -38,20 +34,14 @@ export default function Navbar() {
   };
 
   const navLinks = [
-    { name: t.nav.services, href: "/#services" },
-    { name: t.nav.process, href: "/#process" },
-    { name: t.nav.portfolio, href: "/#portfolio" },
-    { name: t.nav.estimator, href: "/estimate" },
-    { name: t.nav.styleQuiz, href: "/style-quiz" },
-    { name: t.nav.checklist, href: "/checklist" },
-    { name: t.nav.refer, href: "/refer" },
-    { name: t.nav.contact, href: "/#contact" },
-  ];
-
-  const languages: { code: Language; label: string }[] = [
-    { code: "en", label: "EN" },
-    { code: "hi", label: "हिं" },
-    { code: "mr", label: "मरा" },
+    { name: "Services", href: "/#services" },
+    { name: "Process", href: "/#process" },
+    { name: "Portfolio", href: "/#portfolio" },
+    { name: "Cost Estimator", href: "/estimate" },
+    { name: "Style Quiz", href: "/style-quiz" },
+    { name: "Checklist", href: "/checklist" },
+    { name: "Refer & Earn", href: "/refer" },
+    { name: "Contact", href: "/#contact" },
   ];
 
   return (
@@ -89,47 +79,8 @@ export default function Navbar() {
             ))}
           </nav>
 
-          {/* Desktop Actions: Language Toggle + Theme Toggle + CTA */}
+          {/* Desktop Actions: Theme Toggle + CTA */}
           <div className="hidden lg:flex items-center gap-3">
-            {/* Language Switcher */}
-            <div className="relative">
-              <button
-                onClick={() => setIsLangOpen(!isLangOpen)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-card-border bg-card-bg text-xs font-semibold text-fg hover:text-accent transition-colors cursor-pointer"
-                aria-label="Language selector"
-              >
-                <Globe size={14} />
-                <span>{languages.find((l) => l.code === lang)?.label}</span>
-                <ChevronDown size={12} />
-              </button>
-
-              <AnimatePresence>
-                {isLangOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 8 }}
-                    className="absolute right-0 mt-2 w-24 bg-card-bg border border-card-border rounded-xl shadow-lg py-1 z-50"
-                  >
-                    {languages.map((l) => (
-                      <button
-                        key={l.code}
-                        onClick={() => {
-                          setLang(l.code);
-                          setIsLangOpen(false);
-                        }}
-                        className={`w-full text-left px-4 py-1.5 text-xs font-semibold hover:bg-accent/10 transition-colors ${
-                          lang === l.code ? "text-accent" : "text-fg"
-                        }`}
-                      >
-                        {l.label}
-                      </button>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-
             <ThemeToggle />
 
             <Link
@@ -137,27 +88,12 @@ export default function Navbar() {
               className="inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-paper px-5 py-2.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all duration-200"
             >
               <Phone size={13} />
-              <span>{t.nav.bookVisit}</span>
+              <span>Book a Site Visit</span>
             </Link>
           </div>
 
           {/* Mobile Menu Button */}
           <div className="flex items-center gap-2 lg:hidden">
-            {/* Mobile Lang Selector */}
-            <div className="flex items-center gap-1 border border-card-border bg-card-bg rounded-full p-1 text-[11px] font-bold">
-              {languages.map((l) => (
-                <button
-                  key={l.code}
-                  onClick={() => setLang(l.code)}
-                  className={`px-2 py-0.5 rounded-full ${
-                    lang === l.code ? "bg-accent text-paper" : "text-muted"
-                  }`}
-                >
-                  {l.label}
-                </button>
-              ))}
-            </div>
-
             <ThemeToggle />
             <button
               onClick={() => setIsMobileOpen(!isMobileOpen)}
@@ -202,7 +138,7 @@ export default function Navbar() {
                 className="inline-flex items-center justify-center gap-2 bg-accent hover:bg-accent-hover text-paper px-6 py-3.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all"
               >
                 <Phone size={14} />
-                <span>{t.nav.bookVisit}</span>
+                <span>Book a Site Visit</span>
               </Link>
               <a
                 href={getWhatsAppLink(

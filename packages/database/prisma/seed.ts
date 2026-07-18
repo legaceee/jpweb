@@ -1,15 +1,5 @@
-import { PrismaClient } from "../generated/client";
+import { prisma } from "../src/index";
 
-const prisma = new PrismaClient();
-
-/**
- * SAMPLE TESTIMONIALS — PLACEHOLDER DATA
- * ========================================
- * These are sample/placeholder testimonials written to sound believable.
- * Replace them with real client testimonials as they become available.
- * Since testimonials are fetched from the database, swapping them requires
- * no code changes — just update the rows in the Testimonial table.
- */
 const sampleTestimonials = [
   {
     clientName: "Priya S.",
@@ -38,26 +28,52 @@ const sampleTestimonials = [
 ];
 
 async function main() {
-  console.log("🌱 Seeding sample testimonials...");
+  console.log("🌱 Starting database seed...");
 
-  for (const testimonial of sampleTestimonials) {
-    await prisma.testimonial.upsert({
-      where: { id: testimonial.clientName }, // Will always create since IDs are UUIDs
-      update: {},
-      create: testimonial,
-    });
-  }
-
-  // Use createMany for clean inserts (skip duplicates if re-run)
-  const count = await prisma.testimonial.count();
-  if (count === 0) {
+  // Seed testimonials if table is empty
+  const testimonialCount = await prisma.testimonial.count();
+  if (testimonialCount === 0) {
     await prisma.testimonial.createMany({
       data: sampleTestimonials,
     });
-    console.log(`✅ Created ${sampleTestimonials.length} sample testimonials.`);
+    console.log(`✅ Seeded ${sampleTestimonials.length} sample testimonials.`);
   } else {
-    console.log(`ℹ️  ${count} testimonials already exist — skipping seed.`);
+    console.log(`ℹ️  Testimonials already exist (${testimonialCount} items) — skipping.`);
   }
+
+  // Seed a sample project for tracking test if none exist
+  const projectCount = await prisma.project.count();
+  if (projectCount === 0) {
+    const demoProject = await prisma.project.create({
+      data: {
+        clientName: "Sanjay Sharma",
+        phone: "+91 98200 12345",
+        statusToken: "JP-DEMO-2026",
+        currentStage: "APPROVAL",
+        updates: {
+          create: [
+            {
+              stage: "ENQUIRY",
+              note: "Initial site visit completed at Thakur Complex flat.",
+            },
+            {
+              stage: "DESIGN",
+              note: "Modular kitchen and master bedroom 3D layouts finalised.",
+            },
+            {
+              stage: "APPROVAL",
+              note: "Cost estimate and material selections approved by client.",
+            },
+          ],
+        },
+      },
+    });
+    console.log(`✅ Seeded demo project with tracking token: ${demoProject.statusToken}`);
+  } else {
+    console.log(`ℹ️  Projects already exist (${projectCount} items) — skipping.`);
+  }
+
+  console.log("🎉 Seeding completed successfully!");
 }
 
 main()
@@ -65,7 +81,7 @@ main()
     await prisma.$disconnect();
   })
   .catch(async (e) => {
-    console.error("Seed error:", e);
+    console.error("❌ Seed error:", e);
     await prisma.$disconnect();
     process.exit(1);
   });

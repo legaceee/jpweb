@@ -4,7 +4,6 @@ import "./globals.css";
 import Navbar from "../components/navbar";
 import Footer from "../components/footer";
 import FloatingWhatsApp from "../components/floating-whatsapp";
-import { I18nProvider } from "../context/i18n-context";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -73,12 +72,10 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-bg text-fg antialiased">
-        <I18nProvider>
-          <Navbar />
-          <main>{children}</main>
-          <Footer />
-          <FloatingWhatsApp />
-        </I18nProvider>
+        <Navbar />
+        <main>{children}</main>
+        <Footer />
+        <FloatingWhatsApp />
       </body>
     </html>
   );

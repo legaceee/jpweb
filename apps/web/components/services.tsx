@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useEffect, useState } from "react";
-import { useI18n } from "../context/i18n-context";
 
 function InteriorDesignIllustration() {
   return (
@@ -220,16 +219,15 @@ function CivilContractingIllustration() {
 }
 
 export default function Services() {
-  const { t } = useI18n();
   const sectionRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
   const servicesData = [
     {
       id: "interior",
-      eyebrow: t.services.interiorEyebrow,
-      title: t.services.interiorTitle,
-      description: t.services.interiorDesc,
+      eyebrow: "Interior Design",
+      title: "Spaces designed around the way you actually live",
+      description: "We don't sell catalogue templates — every layout is drawn after understanding your family's routines, storage needs, and daily space usage.",
       includes: [
         "Space planning and room layout customised to your flat or bungalow",
         "Material selection — tiles, laminates, hardware, paint finishes",
@@ -242,9 +240,9 @@ export default function Services() {
     },
     {
       id: "civil",
-      eyebrow: t.services.civilEyebrow,
-      title: t.services.civilTitle,
-      description: t.services.civilDesc,
+      eyebrow: "Civil Contracting",
+      title: "Structural work you can build on — literally",
+      description: "From breaking down old walls to raising new ones, we handle the heavy civil work that most interior firms outsource. One team, one timeline.",
       includes: [
         "Residential and commercial construction",
         "Full-flat and room-by-room renovation",
@@ -273,10 +271,10 @@ export default function Services() {
       <div className="max-w-7xl mx-auto">
         <div className="mb-20 max-w-xl">
           <span className="label-text text-accent block mb-3">
-            {t.services.eyebrow}
+            What We Do
           </span>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-serif font-semibold text-fg leading-tight">
-            {t.services.title}
+            Two disciplines, one accountable team
           </h2>
         </div>
 
@@ -316,7 +314,7 @@ export default function Services() {
 
                 <div className="pt-4">
                   <span className="label-text text-muted/60 block mb-4">
-                    {t.services.whatsIncluded}
+                    What&apos;s included
                   </span>
                   <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {service.includes.map((item, j) => (
