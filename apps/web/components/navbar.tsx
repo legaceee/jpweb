@@ -2,210 +2,105 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Menu, X, ChevronDown, Phone, FileText, Compass, HardHat, ShieldCheck } from "lucide-react";
+import { Menu, X, Phone } from "lucide-react";
+import { FaWhatsapp } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import ThemeToggle from "./theme-toggle";
-import { contactConfig } from "../lib/config";
+import { getWhatsAppLink } from "../lib/config";
 
-const services = [
-  {
-    category: "Interior Design",
-    items: [
-      { name: "Residential Interiors", slug: "residential-interiors" },
-      { name: "Modular Kitchen", slug: "modular-kitchen" },
-      { name: "Wardrobes & Storage", slug: "wardrobes" },
-      { name: "False Ceiling & POP", slug: "false-ceiling" },
-    ]
-  },
-  {
-    category: "Civil Contracting",
-    items: [
-      { name: "Civil Contracting Overview", slug: "civil-contracting" },
-      { name: "Construction Services", slug: "construction" },
-      { name: "Renovation & Remodeling", slug: "renovation" },
-      { name: "Painting & Finishing", slug: "painting" },
-    ]
-  },
-  {
-    category: "Specialized Services",
-    items: [
-      { name: "Commercial Interiors", slug: "commercial-interiors" },
-      { name: "Turnkey Projects", slug: "turnkey-projects" },
-      { name: "Plumbing & Electrical", slug: "plumbing" },
-      { name: "Flooring & Tiling", slug: "flooring" },
-    ]
-  }
+const navLinks = [
+  { name: "Services", href: "#services" },
+  { name: "Process", href: "#process" },
+  { name: "Portfolio", href: "#portfolio" },
+  { name: "Testimonials", href: "#testimonials" },
+  { name: "Contact", href: "#contact" },
 ];
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [activeMegaMenu, setActiveMegaMenu] = useState(false);
-  const pathname = usePathname();
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 40) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
-    };
-    window.addEventListener("scroll", handleScroll);
+    const handleScroll = () => setIsScrolled(window.scrollY > 40);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Lock body scroll when mobile menu is open
   useEffect(() => {
-    setIsMobileMenuOpen(false);
-    setActiveMegaMenu(false);
-  }, [pathname]);
+    if (isMobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isMobileOpen]);
 
-  const navLinks = [
-    { name: "Home", href: "/" },
-    { name: "Services", href: "#", isMega: true },
-    { name: "Portfolio", href: "/portfolio" },
-    { name: "Contact", href: "/contact" },
-  ];
+  const handleAnchorClick = () => {
+    setIsMobileOpen(false);
+  };
 
   return (
     <>
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          isScrolled
-            ? "bg-[#121212]/80 backdrop-blur-xl border-b border-white/10 py-3.5 shadow-2xl"
-            : "bg-transparent py-6"
+          isScrolled ? "glass-nav py-3 shadow-sm" : "bg-transparent py-5"
         }`}
       >
         <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
-          
-          {/* Logo */}
-          <Link href="/" className="flex items-center">
-            <motion.img
-              src="/logo-dark.svg"
-              alt="JP Enterprises Logo"
-              className="h-10 md:h-12 w-auto object-contain transition-all duration-300"
-              animate={{
-                filter: isScrolled ? "brightness(100%)" : "brightness(110%)",
-                scale: isScrolled ? 0.95 : 1,
-              }}
+          {/* Logo — swapped by theme via CSS */}
+          <Link href="/" className="flex items-center shrink-0">
+            {/* Light mode logo (dark text on transparent) */}
+            <img
+              src="/assets/logo-light.svg"
+              alt="JP Enterprises"
+              className="h-9 md:h-10 w-auto dark:hidden"
+            />
+            {/* Dark mode logo (light text on transparent) */}
+            <img
+              src="/assets/logo-dark.svg"
+              alt="JP Enterprises"
+              className="h-9 md:h-10 w-auto hidden dark:block"
             />
           </Link>
 
-          {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center space-x-10">
+          {/* Desktop Nav */}
+          <nav className="hidden lg:flex items-center gap-8">
             {navLinks.map((link) => (
-              <div
+              <a
                 key={link.name}
-                className="relative"
-                onMouseEnter={() => link.isMega && setActiveMegaMenu(true)}
-                onMouseLeave={() => link.isMega && setActiveMegaMenu(false)}
+                href={link.href}
+                className="label-text text-muted hover:text-fg transition-colors duration-200"
               >
-                {link.isMega ? (
-                  <button
-                    className={`flex items-center space-x-1.5 text-xs font-semibold uppercase tracking-widest transition-colors duration-300 cursor-pointer ${
-                      activeMegaMenu || pathname.startsWith("/services")
-                        ? "text-primary"
-                        : "text-white/80 hover:text-white"
-                    }`}
-                  >
-                    <span>{link.name}</span>
-                    <ChevronDown size={12} className={`transition-transform duration-300 ${activeMegaMenu ? 'rotate-180 text-primary' : 'text-white/40'}`} />
-                  </button>
-                ) : (
-                  <Link
-                    href={link.href}
-                    className={`text-xs font-semibold uppercase tracking-widest transition-all duration-300 relative py-1 ${
-                      pathname === link.href
-                        ? "text-primary"
-                        : "text-white/80 hover:text-white"
-                    }`}
-                  >
-                    {link.name}
-                    {pathname === link.href && (
-                      <motion.div
-                        layoutId="activeNavLine"
-                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"
-                        transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                      />
-                    )}
-                  </Link>
-                )}
-
-                {/* Mega Menu Dropdown */}
-                {link.isMega && (
-                  <AnimatePresence>
-                    {activeMegaMenu && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 15 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 15 }}
-                        transition={{ duration: 0.25, ease: "easeOut" }}
-                        className="absolute left-1/2 -translate-x-1/2 top-full pt-5 w-[650px] z-50 pointer-events-auto"
-                      >
-                        <div className="bg-[#1A1A1A]/95 backdrop-blur-xl border border-white/10 rounded-2xl p-8 shadow-2xl grid grid-cols-3 gap-8">
-                          {services.map((group) => (
-                            <div key={group.category} className="space-y-4">
-                              <h4 className="text-primary text-[10px] font-bold tracking-widest uppercase border-b border-white/5 pb-2 flex items-center space-x-2">
-                                {group.category === "Interior Design" && <Compass size={11} />}
-                                {group.category === "Civil Contracting" && <HardHat size={11} />}
-                                {group.category === "Specialized Services" && <ShieldCheck size={11} />}
-                                <span>{group.category}</span>
-                              </h4>
-                              <ul className="space-y-2.5">
-                                {group.items.map((item) => (
-                                  <li key={item.slug}>
-                                    <Link
-                                      href={`/services/${item.slug}`}
-                                      className="text-white/70 hover:text-white text-xs block transition-all hover:translate-x-1.5 font-light"
-                                    >
-                                      {item.name}
-                                    </Link>
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                          ))}
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                )}
-              </div>
+                {link.name}
+              </a>
             ))}
           </nav>
 
-          {/* Desktop CTAs with Magnetic scale animation */}
-          <div className="hidden lg:flex items-center space-x-5">
+          {/* Desktop Actions */}
+          <div className="hidden lg:flex items-center gap-3">
             <ThemeToggle />
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Link
-                href="/book"
-                className="bg-primary hover:bg-primary-hover text-dark px-5.5 py-3 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all flex items-center space-x-2 border border-primary/20 shadow-lg"
-              >
-                <Phone size={13} />
-                <span>Book Appointment</span>
-              </Link>
-            </motion.div>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Link
-                href="/quote"
-                className="bg-transparent border border-white/10 hover:border-white/30 text-white px-5.5 py-3 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all flex items-center space-x-2 hover:bg-white/5"
-              >
-                <FileText size={13} />
-                <span>Get Free Quote</span>
-              </Link>
-            </motion.div>
+            <a
+              href="#contact"
+              className="inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-paper px-5 py-2.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all duration-200"
+            >
+              <Phone size={13} />
+              <span>Book a Site Visit</span>
+            </a>
           </div>
 
-          {/* Mobile Menu Button */}
-          <div className="flex items-center space-x-3 lg:hidden">
+          {/* Mobile Actions */}
+          <div className="flex items-center gap-3 lg:hidden">
             <ThemeToggle />
             <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="text-white/80 hover:text-white cursor-pointer p-1"
+              onClick={() => setIsMobileOpen(!isMobileOpen)}
+              className="p-2 text-fg cursor-pointer"
+              aria-label={isMobileOpen ? "Close menu" : "Open menu"}
+              aria-expanded={isMobileOpen}
             >
-              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              {isMobileOpen ? <X size={22} /> : <Menu size={22} />}
             </button>
           </div>
         </div>
@@ -213,59 +108,51 @@ export default function Navbar() {
 
       {/* Mobile Drawer */}
       <AnimatePresence>
-        {isMobileMenuOpen && (
+        {isMobileOpen && (
           <motion.div
             initial={{ opacity: 0, x: "100%" }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: "100%" }}
-            transition={{ type: "tween", duration: 0.35, ease: "easeOut" }}
-            className="fixed inset-0 z-40 bg-[#121212]/95 backdrop-blur-xl lg:hidden flex flex-col pt-24 px-6 overflow-y-auto"
+            transition={{ type: "tween", duration: 0.3, ease: "easeOut" }}
+            className="fixed inset-0 z-40 bg-bg lg:hidden flex flex-col pt-24 px-6 overflow-y-auto"
           >
-            <nav className="flex flex-col space-y-6 text-base font-semibold border-b border-white/5 pb-8 mb-6">
-              <Link href="/" className="text-white hover:text-primary tracking-widest uppercase text-sm">
-                Home
-              </Link>
-              <Link href="/portfolio" className="text-white hover:text-primary tracking-widest uppercase text-sm">
-                Portfolio
-              </Link>
-              <Link href="/contact" className="text-white hover:text-primary tracking-widest uppercase text-sm">
-                Contact
-              </Link>
-              
-              {/* Mobile Services Sections */}
-              <div className="space-y-3">
-                <h4 className="text-primary text-[10px] font-bold tracking-widest uppercase">
-                  Our Design Services
-                </h4>
-                <div className="grid grid-cols-1 gap-2.5 pl-3 border-l border-white/5">
-                  {services.flatMap(g => g.items).map((item) => (
-                    <Link
-                      key={item.slug}
-                      href={`/services/${item.slug}`}
-                      className="text-white/60 hover:text-white text-xs py-0.5 font-light"
-                    >
-                      {item.name}
-                    </Link>
-                  ))}
-                </div>
-              </div>
+            {/* Brass accent line at top */}
+            <div className="brass-rule w-12 mb-8" />
+
+            <nav className="flex flex-col gap-6 mb-10">
+              {navLinks.map((link) => (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  onClick={handleAnchorClick}
+                  className="text-fg text-lg font-serif font-medium hover:text-accent transition-colors"
+                >
+                  {link.name}
+                </a>
+              ))}
             </nav>
 
-            <div className="flex flex-col space-y-4 pb-12">
-              <Link
-                href="/book"
-                className="bg-primary hover:bg-primary-hover text-dark px-6 py-3.5 rounded-xl text-xs font-bold uppercase tracking-widest text-center transition-all flex items-center justify-center space-x-2"
+            <div className="flex flex-col gap-3 mt-auto pb-12">
+              <a
+                href="#contact"
+                onClick={handleAnchorClick}
+                className="inline-flex items-center justify-center gap-2 bg-accent hover:bg-accent-hover text-paper px-6 py-3.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all"
               >
                 <Phone size={14} />
-                <span>Book Appointment</span>
-              </Link>
-              <Link
-                href="/quote"
-                className="border border-white/10 hover:border-white/30 text-white px-6 py-3.5 rounded-xl text-xs font-bold uppercase tracking-widest text-center transition-all flex items-center justify-center space-x-2 hover:bg-white/5"
+                <span>Book a Site Visit</span>
+              </a>
+              <a
+                href={getWhatsAppLink(
+                  "Hi, I'd like to discuss a project with JP Enterprises."
+                )}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={handleAnchorClick}
+                className="inline-flex items-center justify-center gap-2 border border-accent/30 text-fg hover:bg-accent/5 px-6 py-3.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all"
               >
-                <FileText size={14} />
-                <span>Get Free Quote</span>
-              </Link>
+                <FaWhatsapp className="text-[#25D366] w-4 h-4" />
+                <span>Chat on WhatsApp</span>
+              </a>
             </div>
           </motion.div>
         )}

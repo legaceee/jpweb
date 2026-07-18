@@ -1,53 +1,45 @@
 import type { Metadata } from "next";
-import { Playfair_Display, Outfit } from "next/font/google";
+import { Inter, Fraunces } from "next/font/google";
 import "./globals.css";
 import Navbar from "../components/navbar";
 import Footer from "../components/footer";
-import FloatingContactBar from "../components/floating-contact-bar";
-import CustomCursor from "../components/custom-cursor";
+import FloatingWhatsApp from "../components/floating-whatsapp";
 
-const playfair = Playfair_Display({
+const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-playfair",
+  variable: "--font-inter",
   display: "swap",
 });
 
-const outfit = Outfit({
+const fraunces = Fraunces({
   subsets: ["latin"],
-  variable: "--font-outfit",
+  variable: "--font-fraunces",
   display: "swap",
+  axes: ["opsz"],
 });
 
 export const metadata: Metadata = {
-  title: {
-    default: "JP Enterprises | Premium Interior Design & Civil Contractor",
-    template: "%s | JP Enterprises"
-  },
-  description: "JP Enterprises offers luxury interior design, modular kitchens, turnkey civil contracting, house construction, and premium renovations. Crafting spaces with timeless elegance and precision.",
-  keywords: ["Interior Design", "Civil Contractor", "House Construction", "Modular Kitchen", "Renovation Services", "Luxury Interiors", "JP Enterprises"],
+  title: "JP Enterprises | Interior Design & Civil Contracting in Mumbai",
+  description:
+    "JP Enterprises delivers hands-on interior design and civil contracting across Mumbai. Decades of experience in renovation, construction, and turnkey execution — from foundation to finish.",
+  keywords: [
+    "Interior Design Mumbai",
+    "Civil Contractor Mumbai",
+    "Home Renovation Mumbai",
+    "Construction Mumbai",
+    "Turnkey Contractor Mumbai",
+    "JP Enterprises",
+  ],
   metadataBase: new URL("https://jpenterprises.com"),
   openGraph: {
-    title: "JP Enterprises | Premium Interior Design & Civil Contractor",
-    description: "Crafting luxury residential and commercial spaces from architectural foundation to premium interior finishes.",
+    title: "JP Enterprises | Interior Design & Civil Contracting in Mumbai",
+    description:
+      "Decades of hands-on contracting experience in Mumbai. Interior design and civil contracting under one roof.",
     url: "https://jpenterprises.com",
     siteName: "JP Enterprises",
-    images: [
-      {
-        url: "/images/hero_bg.png",
-        width: 1200,
-        height: 630,
-        alt: "JP Enterprises Luxury Living Room"
-      }
-    ],
-    locale: "en_US",
+    locale: "en_IN",
     type: "website",
   },
-  twitter: {
-    card: "summary_large_image",
-    title: "JP Enterprises | Premium Interior Design & Civil Contractor",
-    description: "Crafting luxury residential and commercial spaces from architectural foundation to premium interior finishes.",
-    images: ["/images/hero_bg.png"],
-  }
 };
 
 export default function RootLayout({
@@ -56,14 +48,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={`${playfair.variable} ${outfit.variable}`}>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${inter.variable} ${fraunces.variable}`}
+    >
       <head>
         <script
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
                 try {
-                  var saved = localStorage.getItem('theme');
+                  var saved = localStorage.getItem('jp-theme');
                   if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                     document.documentElement.classList.add('dark');
                   } else {
@@ -71,18 +67,15 @@ export default function RootLayout({
                   }
                 } catch (e) {}
               })();
-            `
+            `,
           }}
         />
       </head>
-      <body className="bg-bg text-fg antialiased selection:bg-primary selection:text-card">
-        <CustomCursor />
+      <body className="bg-bg text-fg antialiased">
         <Navbar />
-        <div className="min-h-screen flex flex-col pt-20">
-          <main className="flex-grow">{children}</main>
-        </div>
+        <main>{children}</main>
         <Footer />
-        <FloatingContactBar />
+        <FloatingWhatsApp />
       </body>
     </html>
   );

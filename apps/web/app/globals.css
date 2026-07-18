@@ -1,25 +1,202 @@
 @import "tailwindcss";
 
+/* ============================================================
+   JP ENTERPRISES — DESIGN SYSTEM
+   Architectural-drafting inspired. Warm materiality.
+   ============================================================ */
+
 @theme {
-  --color-primary: var(--accent);
-  --color-primary-hover: var(--accent-hover);
-  --color-bg: var(--background);
-  --color-fg: var(--foreground);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card-bg);
-  --color-border: var(--card-border);
-  
-  --font-serif: var(--font-playfair), Georgia, serif;
-  --font-sans: var(--font-outfit), sans-serif;
-  
-  --animate-fade-in-up: fade-in-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  --animate-scroll-down: scroll-down 2s ease-in-out infinite;
+  /* --- Palette --- */
+  --color-ink: #1C1B19;
+  --color-paper: #EDE7DD;
+  --color-brass: #B08D57;
+  --color-brass-light: #C7A369;
+  --color-forest: #2F3B2C;
+  --color-stone: #6B6459;
+
+  /* --- Semantic mappings (light mode default) --- */
+  --color-bg: var(--color-paper);
+  --color-fg: var(--color-ink);
+  --color-accent: var(--color-brass);
+  --color-accent-hover: #9A7A4A;
+  --color-muted: var(--color-stone);
+  --color-card-bg: #F5F0E8;
+  --color-card-border: rgba(28, 27, 25, 0.08);
+  --color-section-alt: var(--color-forest);
+
+  /* --- Typography --- */
+  --font-serif: var(--font-fraunces), Georgia, serif;
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+
+  /* --- Animation keyframes registered --- */
+  --animate-fade-in: fade-in 0.6s ease-out forwards;
+  --animate-draw-line: draw-line 1.8s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+  --animate-scroll-hint: scroll-hint 2.2s ease-in-out infinite;
 }
 
-@keyframes fade-in-up {
+/* --- Dark Mode Overrides --- */
+.dark {
+  --color-bg: #1C1B19;
+  --color-fg: #EDE7DD;
+  --color-accent: #C7A369;
+  --color-accent-hover: #D4B57A;
+  --color-muted: #9A9389;
+  --color-card-bg: #252420;
+  --color-card-border: rgba(237, 231, 221, 0.08);
+  --color-section-alt: #1A2518;
+}
+
+/* ============================================================
+   BASE STYLES
+   ============================================================ */
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  color: var(--color-fg);
+  background-color: var(--color-bg);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+  transition: background-color 0.4s ease, color 0.4s ease;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Serif for display headings only */
+h1, h2 {
+  font-family: var(--font-serif);
+}
+
+/* Data / label face: Inter uppercase wide tracking */
+.label-text {
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 0.625rem;
+  font-weight: 600;
+}
+
+/* ============================================================
+   SELECTION
+   ============================================================ */
+
+::selection {
+  background-color: var(--color-accent);
+  color: var(--color-bg);
+}
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-accent);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent-hover);
+}
+
+/* ============================================================
+   GLASSMORPHISM — NAV BACKGROUND
+   ============================================================ */
+
+.glass-nav {
+  background: rgba(237, 231, 221, 0.8);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid rgba(28, 27, 25, 0.06);
+}
+
+.dark .glass-nav {
+  background: rgba(28, 27, 25, 0.85);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid rgba(237, 231, 221, 0.06);
+}
+
+/* ============================================================
+   BRASS RULE LINES — dimension-line style
+   ============================================================ */
+
+.brass-rule {
+  height: 1px;
+  background: var(--color-accent);
+  opacity: 0.3;
+}
+
+.brass-rule-vertical {
+  width: 1px;
+  background: var(--color-accent);
+  opacity: 0.3;
+}
+
+/* ============================================================
+   SVG DRAW ANIMATION — stroke-dashoffset
+   ============================================================ */
+
+.draw-svg {
+  stroke-dasharray: var(--path-length, 1000);
+  stroke-dashoffset: var(--path-length, 1000);
+  animation: draw-line 2s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+
+.draw-svg-delayed {
+  stroke-dasharray: var(--path-length, 800);
+  stroke-dashoffset: var(--path-length, 800);
+  animation: draw-line 2.4s cubic-bezier(0.65, 0, 0.35, 1) 0.3s forwards;
+}
+
+/* ============================================================
+   GRID DRAW-IN — lines extend from 0 to full length on scroll
+   ============================================================ */
+
+.grid-line-h {
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 1.2s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.grid-line-v {
+  transform: scaleY(0);
+  transform-origin: center top;
+  transition: transform 1.2s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.grid-line-h.visible,
+.grid-line-v.visible {
+  transform: scaleX(1);
+}
+
+.grid-line-v.visible {
+  transform: scaleY(1);
+}
+
+/* ============================================================
+   KEYFRAMES
+   ============================================================ */
+
+@keyframes draw-line {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes fade-in {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(12px);
   }
   to {
     opacity: 1;
@@ -27,7 +204,7 @@
   }
 }
 
-@keyframes scroll-down {
+@keyframes scroll-hint {
   0% {
     transform: translateY(0);
     opacity: 0;
@@ -44,100 +221,39 @@
   }
 }
 
-:root {
-  --background: #FCFCFA; /* Premium soft bone-white */
-  --foreground: #1C1C1A; /* Charcoal off-black */
-  --card-bg: #FFFFFF;
-  --card-border: rgba(0, 0, 0, 0.06);
-  --accent: #A68050; /* Rich bronze-gold (optimal contrast for light bg) */
-  --accent-hover: #8F6A3D;
-  --font-playfair: 'Playfair Display', serif;
-  --font-outfit: 'Outfit', sans-serif;
+/* ============================================================
+   FOCUS STATES — visible, brass-colored
+   ============================================================ */
+
+*:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: 2px;
 }
 
-.dark {
-  --background: #121212; /* Deep carbon black */
-  --foreground: #FAFAFA; /* Off-white ivory */
-  --card-bg: #1A1A1A;
-  --card-border: rgba(255, 255, 255, 0.07);
-  --accent: #C5A880; /* Luxe champagne gold */
-  --accent-hover: #B4966E;
-}
+/* ============================================================
+   REDUCED MOTION — disable all animations
+   ============================================================ */
 
-html {
-  scroll-behavior: smooth;
-}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 
-body {
-  color: var(--foreground);
-  background-color: var(--background);
-  font-family: var(--font-outfit), sans-serif;
-  overflow-x: hidden;
-  transition: background-color 0.4s ease, color 0.4s ease;
-}
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-playfair), serif;
-}
+  .draw-svg,
+  .draw-svg-delayed {
+    stroke-dashoffset: 0 !important;
+  }
 
-/* Premium custom styling utilities */
-.glassmorphism {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.glassmorphism-light {
-  background: rgba(250, 250, 250, 0.8);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-.gold-gradient {
-  background: linear-gradient(135deg, #E5C07B 0%, #C5A880 50%, #8C6239 100%);
-}
-
-.gold-text-gradient {
-  background: linear-gradient(135deg, #E5C07B 0%, #C5A880 50%, #8C6239 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.dark-gradient {
-  background: linear-gradient(180deg, #121212 0%, #1E1E1E 100%);
-}
-
-.luxury-card-shadow {
-  box-shadow: 0 10px 30px -15px rgba(140, 98, 57, 0.1);
-}
-
-.luxury-card-shadow:hover {
-  box-shadow: 0 20px 45px -10px rgba(140, 98, 57, 0.18);
-}
-
-/* Hide default scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--background);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--accent);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--accent-hover);
-}
-
-/* Hide default cursor on desktop when custom cursor active */
-@media (min-width: 1024px) {
-  body, a, button, select, input, textarea, label, [role="button"], option {
-    cursor: none !important;
+  .grid-line-h,
+  .grid-line-v {
+    transform: none !important;
   }
 }

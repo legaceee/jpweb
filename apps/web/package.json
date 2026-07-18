@@ -8,24 +8,17 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint --max-warnings 0",
-    "check-types": "next typegen && tsc --noEmit"
+    "check-types": "tsc --noEmit"
   },
   "dependencies": {
-    "@hookform/resolvers": "^5.4.0",
     "@prisma/client": "latest",
-    "@react-three/drei": "^10.7.7",
-    "@react-three/fiber": "^9.6.1",
     "@repo/database": "workspace:*",
-    "@repo/ui": "workspace:*",
     "framer-motion": "^12.42.2",
     "lucide-react": "^1.24.0",
     "next": "16.2.0",
-    "nodemailer": "^9.0.3",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "react-hook-form": "^7.81.0",
     "react-icons": "^5.7.0",
-    "three": "^0.185.1",
     "zod": "^4.4.3"
   },
   "devDependencies": {
@@ -33,10 +26,8 @@
     "@repo/typescript-config": "workspace:*",
     "@tailwindcss/postcss": "^4.3.2",
     "@types/node": "^22.15.3",
-    "@types/nodemailer": "^8.0.1",
     "@types/react": "19.2.2",
     "@types/react-dom": "19.2.2",
-    "@types/three": "^0.185.1",
     "eslint": "^9.39.1",
     "postcss": "^8.5.17",
     "prisma": "latest",

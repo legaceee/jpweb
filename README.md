@@ -1,120 +1,135 @@
-# JP Enterprises - Premium Interior Design & Civil Contractor Website
+# JP Enterprises — Interior Design & Civil Contracting Website
 
-A premium, production-ready, highly optimized Next.js 16 (App Router) monorepo web application developed for **JP Enterprises**, featuring modern branding, dynamic service catalogs, filterable project galleries, appointment scheduling, and automated email/WhatsApp integration systems.
+A premium, responsive marketing website for **JP Enterprises**, an interior design and civil contracting company based in Mumbai. Built as a Turborepo monorepo with Next.js 16 (App Router), Tailwind CSS v4, Framer Motion, and Prisma.
 
 ---
 
-## 1. Project Architecture
-
-This project is configured as a Monorepo using `pnpm workspaces` and `Turborepo`:
+## Architecture
 
 ```
 jpenterprises_Web/
 ├── apps/
-│   └── web/                   # Next.js 16 (App Router) Frontend App
-│       ├── app/               # Page routes (Static & Dynamic)
-│       ├── components/        # Premium UI layout elements (Header, Footer, Floating WhatsApp)
-│       ├── public/            # Logo SVGs and premium generated PNG images
-│       └── postcss.config.js  # PostCSS Tailwind CSS v4 processor configuration
+│   └── web/                      # Next.js 16 (App Router) — the website
+│       ├── app/
+│       │   ├── layout.tsx        # Root layout (Fraunces + Inter fonts, theme init)
+│       │   ├── page.tsx          # Single-page site — Server Component
+│       │   ├── actions.ts        # Server Action for appointment booking
+│       │   └── globals.css       # Full design system (palette, animations)
+│       ├── components/           # All UI components
+│       ├── lib/config.ts         # Contact info, WhatsApp URLs, Google Maps
+│       └── public/assets/        # Logo SVGs
 ├── packages/
-│   ├── database/              # PostgreSQL client wrapper package
-│   │   ├── prisma/            # Schema definition and config models
-│   │   └── src/index.ts       # Shared Prisma client export
-│   ├── typescript-config/     # Base compiler configurations
-│   ├── eslint-config/         # Shared linter rules
-│   └── ui/                    # Reusable common react components
-├── package.json               # Root monorepo configuration
-└── pnpm-workspace.yaml        # Workspaces registration
+│   ├── database/                 # Prisma schema, client, seed script
+│   │   ├── prisma/
+│   │   │   ├── schema.prisma     # Appointment + Testimonial models
+│   │   │   └── seed.ts           # Sample testimonial data
+│   │   └── src/index.ts          # Shared Prisma client export
+│   ├── typescript-config/        # Shared tsconfig
+│   └── eslint-config/            # Shared ESLint rules
+├── turbo.json
+├── pnpm-workspace.yaml
+└── package.json
 ```
 
 ---
 
-## 2. Technology Stack
+## Tech Stack
 
-* **Frontend Framework**: Next.js 16 (App Router) & React 19
-* **Styling compiler**: Tailwind CSS v4 & PostCSS
-* **Transitions**: Framer Motion
-* **Form bindings**: React Hook Form & Zod Validations
-* **Database engine**: PostgreSQL
-* **ORM client**: Prisma (v7.8.0)
-* **Mail Dispatcher**: Nodemailer (via SMTP)
-* **Visual Icons**: Lucide React & React Icons
+- **Framework**: Next.js 16 (App Router, TypeScript, Server Components)
+- **Styling**: Tailwind CSS v4, custom CSS design system
+- **Animation**: Framer Motion + CSS animations (SVG stroke-dashoffset draw-in)
+- **Database**: PostgreSQL via Prisma 7 with pg adapter
+- **Icons**: Lucide React, React Icons (WhatsApp)
+- **Validation**: Zod
 
 ---
 
-## 3. Database Schema
+## Design System
 
-The PostgreSQL schema contains four active tracking models defined in `packages/database/prisma/schema.prisma`:
+| Token | Value | Usage |
+|-------|-------|-------|
+| `--ink` | `#1C1B19` | Dark mode bg / light mode text |
+| `--paper` | `#EDE7DD` | Light mode bg / dark mode text |
+| `--brass` | `#B08D57` | Primary accent (light mode) |
+| `--brass-light` | `#C7A369` | Primary accent (dark mode) |
+| `--forest` | `#2F3B2C` | Section backgrounds (Process) |
+| `--stone` | `#6B6459` | Secondary/muted text |
 
-* **Appointment**: Stores fullName, phone, email, address, preferredDate, preferredTime, service, and current status (`LeadStatus`).
-* **QuotationRequest**: Tracks estimates requested by customers, storing budgeting tiers, site location, and project descriptions.
-* **ContactForm**: Stores general user feedback messages.
-* **Newsletter**: Stores unique user email addresses for campaign subscription.
-
-All leads default to a status of `PENDING` and support progressive updates to `CONTACTED`, `QUOTED`, `WON`, or `LOST`.
-
----
-
-## 4. Environment Variables (`.env` Configuration)
-
-Create a `.env` file at the root of the workspace or in `apps/web/.env` with the following variables:
-
-```bash
-# Database URL
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/jpenterprises?schema=public"
-
-# SMTP Nodemailer Settings
-SMTP_HOST="smtp.mailtrap.io"
-SMTP_PORT=2525
-SMTP_USER="your-smtp-username"
-SMTP_PASSWORD="your-smtp-password"
-
-# WhatsApp Business Dispatch Credentials (or Twilio endpoint settings)
-WHATSAPP_API_KEY="your-access-token"
-WHATSAPP_PHONE_NUMBER_ID="your-phone-id"
-BUSINESS_WHATSAPP="+919876543210" # Number that receives new lead alerts
-```
-
-*Note: In development, in the absence of SMTP or WhatsApp credentials, the application gracefully prints confirmation emails and WhatsApp payload layouts to the terminal console.*
+**Typography**: Fraunces (serif, headlines) + Inter (everything else)
 
 ---
 
-## 5. Development Guide
+## Database Schema
 
-To start the local workspace development server:
+Two models in `packages/database/prisma/schema.prisma`:
+
+- **Appointment** — `name`, `phone`, `serviceType`, `preferredDate`, `message`, `status` (default `NEW`), `createdAt`
+- **Testimonial** — `clientName`, `area`, `quote`, `isPublished` (default `true`), `createdAt`
+
+Testimonials are rendered from the database, making it easy to add real client quotes later without code changes.
+
+---
+
+## Development
 
 ```bash
 # 1. Install dependencies
 pnpm install
 
-# 2. Generate Prisma Client
+# 2. Generate Prisma client
 pnpm --filter @repo/database db:generate
 
-# 3. Start developer servers
+# 3. Start dev server
 pnpm dev
 ```
 
-The web application runs on `http://localhost:3000`.
+The website runs at `http://localhost:3000`.
 
----
+### Database Setup (optional — site works without it)
 
-## 6. Build and Verification Checks
-
-Compile and bundle the project packages for production output:
+The site renders with fallback testimonials if no database is available.
+To connect a real PostgreSQL database:
 
 ```bash
-# Runs TypeScript compiler checks and compiles static pages
-pnpm run build
+# Set the connection URL in packages/database/.env
+DATABASE_URL="postgresql://user:password@host:5432/jpenterprises?schema=public"
+
+# Push schema to database
+pnpm --filter @repo/database db:push
+
+# Seed sample testimonials
+pnpm --filter @repo/database db:seed
 ```
 
 ---
 
-## 7. Integrations
+## TODOs for Production
 
-### Nodemailer Email Templates
-All lead form actions automatically dispatch HTML-formatted email alerts to the user. The templates utilize a warm minimalism aesthetic with responsive styling, detailed project parameters, support contacts, and official branding colors.
+Search the codebase for `TODO` comments. Key items:
 
-### WhatsApp Business API integration
-Client entries trigger a mock API post-handler. The server formats standard payloads:
-1. **Business Alert**: Instantly sends the client's phone, email, service details, and address to the company head for review.
-2. **Client Confirmation**: Sends a personalized acknowledgment, scheduling details, and contact coordinates to the customer's phone.
+1. **WhatsApp number**: Replace `91XXXXXXXXXX` in `apps/web/lib/config.ts` with the real WhatsApp Business number
+2. **Phone number**: Replace `+91 XXXXX XXXXX` in the same config file
+3. **Google Maps**: Replace the embed URL with the actual Google Business listing embed
+4. **Testimonials**: Replace sample testimonials in the database with real client quotes
+5. **Logo files**: Located at `apps/web/public/assets/logo-light.svg` and `logo-dark.svg`
+
+---
+
+## Site Sections
+
+1. **Hero** — Brass compass SVG draw-in animation, headline about precision, two CTAs
+2. **Trust Strip** — Honest qualitative facts (no fake stats)
+3. **Services** — Interior Design + Civil Contracting with line-art illustrations
+4. **Process** — 4-step sequence: Site Visit → Design & Quote → Execution → Handover
+5. **Portfolio** — Honest empty state with line-art + WhatsApp album request
+6. **Testimonials** — Auto-advancing carousel, DB-driven, keyboard accessible
+7. **Why JP** — Specific differentiators (no generic icon grid)
+8. **Service Area Map** — Google Maps embed + directions link
+9. **Appointment Form** — Books to DB + WhatsApp redirect
+10. **Floating WhatsApp** — Fixed bottom-right, brass-ringed
+
+---
+
+## License
+
+Private. © JP Enterprises.

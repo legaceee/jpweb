@@ -6,7 +6,11 @@
   "types": "./src/index.ts",
   "scripts": {
     "db:generate": "prisma generate",
-    "db:push": "prisma db push"
+    "db:push": "prisma db push",
+    "db:seed": "tsx prisma/seed.ts"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@prisma/client": "latest",
@@ -18,6 +22,7 @@
     "@repo/typescript-config": "workspace:*",
     "@types/pg": "^8.11.4",
     "prisma": "latest",
+    "tsx": "^4.19.0",
     "typescript": "5.9.2"
   }
 }

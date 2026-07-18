@@ -1,8 +1,11 @@
-import { Pool } from 'pg';
-import { PrismaPg } from '@prisma/adapter-pg';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from "@prisma/client";
+import { Pool } from "pg";
+import { PrismaPg } from "@prisma/adapter-pg";
 
-const connectionString = process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/jpenterprises?schema=public';
+const connectionString =
+  process.env.DATABASE_URL ||
+  "postgresql://postgres:postgres@localhost:5432/jpenterprises?schema=public";
+
 const pool = new Pool({ connectionString });
 const adapter = new PrismaPg(pool);
 
@@ -16,7 +19,6 @@ declare global {
 
 export const prisma = globalThis.prismaGlobal ?? prismaClientSingleton();
 
-if (process.env.NODE_ENV !== 'production') globalThis.prismaGlobal = prisma;
+if (process.env.NODE_ENV !== "production") globalThis.prismaGlobal = prisma;
 
-export * from '@prisma/client';
-export { LeadStatus } from '@prisma/client';
+export * from "@prisma/client";
