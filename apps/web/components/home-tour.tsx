@@ -8,7 +8,6 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Phone } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import { getWhatsAppLink } from "../lib/config";
-import { useI18n } from "../context/i18n-context";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -117,7 +116,6 @@ function DesktopTour() {
   const containerRef = useRef<HTMLDivElement>(null);
   const pinnedRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
-  const { t } = useI18n();
 
   const whatsappUrl = getWhatsAppLink(
     "Hi JP Enterprises, I'd like to schedule a site visit for my project in Mumbai."
@@ -338,7 +336,7 @@ function DesktopTour() {
                 className="inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-paper px-6 py-3.5 rounded-lg text-sm font-semibold transition-all duration-200 shadow-lg shadow-accent/20"
               >
                 <Phone size={16} />
-                {t.hero.ctaBook}
+                Book a Site Visit
               </a>
               <a
                 href={whatsappUrl}
@@ -347,7 +345,7 @@ function DesktopTour() {
                 className="inline-flex items-center gap-2 border border-white/30 hover:border-white/60 text-white hover:bg-white/10 px-5 py-3.5 rounded-lg text-sm font-semibold transition-all duration-200 backdrop-blur-sm"
               >
                 <FaWhatsapp className="text-[#25D366] w-[18px] h-[18px]" />
-                {t.hero.ctaWhatsapp}
+                Chat on WhatsApp
               </a>
             </div>
           </div>
@@ -364,7 +362,6 @@ function DesktopTour() {
 function MobileTour() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
-  const { t } = useI18n();
 
   const whatsappUrl = getWhatsAppLink(
     "Hi JP Enterprises, I'd like to schedule a site visit for my project in Mumbai."
@@ -470,7 +467,7 @@ function MobileTour() {
             className="inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-paper px-5 py-3 rounded-lg text-sm font-semibold transition-all duration-200 shadow-lg shadow-accent/10"
           >
             <Phone size={15} />
-            {t.hero.ctaBook}
+            Book a Site Visit
           </a>
           <a
             href={whatsappUrl}
@@ -479,7 +476,7 @@ function MobileTour() {
             className="inline-flex items-center gap-2 border border-accent/40 hover:border-accent text-fg hover:bg-accent/5 px-4 py-3 rounded-lg text-sm font-semibold transition-all duration-200"
           >
             <FaWhatsapp className="text-[#25D366] w-[17px] h-[17px]" />
-            {t.hero.ctaWhatsapp}
+            Chat on WhatsApp
           </a>
         </div>
       </div>
@@ -492,8 +489,6 @@ function MobileTour() {
    -------------------------------------------------------------------------- */
 
 function ReducedMotionTour() {
-  const { t } = useI18n();
-
   const whatsappUrl = getWhatsAppLink(
     "Hi JP Enterprises, I'd like to schedule a site visit for my project in Mumbai."
   );
@@ -545,7 +540,7 @@ function ReducedMotionTour() {
             className="inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-paper px-6 py-3.5 rounded-lg text-sm font-semibold transition-all duration-200"
           >
             <Phone size={16} />
-            {t.hero.ctaBook}
+            Book a Site Visit
           </a>
           <a
             href={whatsappUrl}
@@ -554,7 +549,7 @@ function ReducedMotionTour() {
             className="inline-flex items-center gap-2 border border-accent/40 hover:border-accent text-fg hover:bg-accent/5 px-5 py-3.5 rounded-lg text-sm font-semibold transition-all duration-200"
           >
             <FaWhatsapp className="text-[#25D366] w-[18px] h-[18px]" />
-            {t.hero.ctaWhatsapp}
+            Chat on WhatsApp
           </a>
         </div>
       </div>
