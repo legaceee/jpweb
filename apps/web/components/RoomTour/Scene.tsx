@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useMemo, Suspense } from "react";
+import { useRef, useMemo, useEffect, Suspense } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useTexture } from "@react-three/drei";
 import * as THREE from "three";
@@ -67,37 +67,62 @@ const DOORWAY_Z_POSITIONS = [
 ];
 
 /* --------------------------------------------------------------------------
-   RoomPlane — Textured mesh plane with foreground & background depth layers
+   RoomPlane — Sharp texture configuration & aspect-ratio matched mesh
    -------------------------------------------------------------------------- */
 
 function RoomPlane({ room, isMobile }: { room: TourRoom; isMobile: boolean }) {
   const texture = useTexture(room.texture);
+  const { gl } = useThree();
+
+  // Configure high-DPI texture filtering & maximum anisotropy for sharp rendering
+  useEffect(() => {
+    if (texture) {
+      texture.minFilter = THREE.LinearMipmapLinearFilter;
+      texture.magFilter = THREE.LinearFilter;
+      texture.anisotropy = gl.capabilities.getMaxAnisotropy();
+      texture.generateMipmaps = true;
+      texture.colorSpace = THREE.SRGBColorSpace;
+      texture.needsUpdate = true;
+    }
+  }, [texture, gl]);
+
+  // Compute exact mesh plane dimensions from source image dimensions
+  const planeArgs: [number, number] = useMemo(() => {
+    const img = texture?.image as HTMLImageElement | undefined;
+    if (img?.width && img?.height) {
+      const aspect = img.width / img.height;
+      return [9 * aspect, 9];
+    }
+    return [16, 9];
+  }, [texture]);
+
+  const [planeW, planeH] = planeArgs;
 
   return (
     <group position={[0, 0, room.z]}>
       {/* Main room image plane */}
       <mesh position={[0, 0, 0]}>
-        <planeGeometry args={[16, 9]} />
+        <planeGeometry args={planeArgs} />
         <meshBasicMaterial map={texture} toneMapped={false} />
       </mesh>
 
-      {/* Foreground brass architectural frame layer */}
+      {/* Foreground brass architectural frame layer matching exact aspect */}
       {!isMobile && (
         <group position={[0, 0, 0.15]}>
-          <mesh position={[0, 4.52, 0]}>
-            <planeGeometry args={[16.08, 0.08]} />
+          <mesh position={[0, planeH / 2 + 0.02, 0]}>
+            <planeGeometry args={[planeW + 0.08, 0.08]} />
             <meshBasicMaterial color="#B08D57" transparent opacity={0.6} />
           </mesh>
-          <mesh position={[0, -4.52, 0]}>
-            <planeGeometry args={[16.08, 0.08]} />
+          <mesh position={[0, -planeH / 2 - 0.02, 0]}>
+            <planeGeometry args={[planeW + 0.08, 0.08]} />
             <meshBasicMaterial color="#B08D57" transparent opacity={0.6} />
           </mesh>
-          <mesh position={[-8.04, 0, 0]}>
-            <planeGeometry args={[0.08, 9.12]} />
+          <mesh position={[-planeW / 2 - 0.02, 0, 0]}>
+            <planeGeometry args={[0.08, planeH + 0.12]} />
             <meshBasicMaterial color="#B08D57" transparent opacity={0.6} />
           </mesh>
-          <mesh position={[8.04, 0, 0]}>
-            <planeGeometry args={[0.08, 9.12]} />
+          <mesh position={[planeW / 2 + 0.02, 0, 0]}>
+            <planeGeometry args={[0.08, planeH + 0.12]} />
             <meshBasicMaterial color="#B08D57" transparent opacity={0.6} />
           </mesh>
         </group>
@@ -105,7 +130,7 @@ function RoomPlane({ room, isMobile }: { room: TourRoom; isMobile: boolean }) {
 
       {/* Background ambient dark plane */}
       <mesh position={[0, 0, -0.3]}>
-        <planeGeometry args={[20, 12]} />
+        <planeGeometry args={[planeW + 4, planeH + 3]} />
         <meshBasicMaterial color="#1C1B19" transparent opacity={0.9} />
       </mesh>
     </group>
@@ -151,7 +176,7 @@ function DoorframePassthrough({ z }: { z: number }) {
 }
 
 /* --------------------------------------------------------------------------
-   CameraRig — Lerps camera Z position based on scrollProgress ref + demand rendering
+   CameraRig — Clamped camera dolly with smooth lerp & demand invalidation
    -------------------------------------------------------------------------- */
 
 function CameraRig({
@@ -163,15 +188,28 @@ function CameraRig({
 }) {
   const { camera, invalidate } = useThree();
   const startZ = 7;
-  const maxTravelZ = -(ROOM_SPACING * (ROOMS.length - 1)) - 1;
+  const maxZ = -(ROOM_SPACING * (ROOMS.length - 1)); // Exactly -42 (Bathroom plane position)
   const lastZ = useRef(camera.position.z);
 
   useFrame((state) => {
-    const targetZ = startZ + scrollProgress.current * (maxTravelZ - startZ);
+    // Map 0..1 scrollProgress into 2 phases:
+    // 0.0 .. 0.85: Camera travels down Z axis from startZ (7) to maxZ (-42)
+    // 0.85 .. 1.0: Camera remains parked at maxZ (-42) showing Bathroom behind CTA
+    const roomPhaseEnd = 0.85;
+    const roomProgress = Math.min(scrollProgress.current / roomPhaseEnd, 1);
+
+    const targetZ = THREE.MathUtils.clamp(
+      startZ + roomProgress * (maxZ - startZ),
+      maxZ,
+      startZ
+    );
 
     // Elastic lerp follow
-    const lerpFactor = isMobile ? 0.1 : 0.06;
-    const nextZ = THREE.MathUtils.lerp(camera.position.z, targetZ, lerpFactor);
+    const lerpFactor = isMobile ? 0.12 : 0.06;
+    let nextZ = THREE.MathUtils.lerp(camera.position.z, targetZ, lerpFactor);
+
+    // Double clamp camera Z to guarantee overshoot into black void is physically impossible
+    nextZ = THREE.MathUtils.clamp(nextZ, maxZ, startZ);
     camera.position.z = nextZ;
 
     // Subtle sway tied to movement
@@ -184,7 +222,7 @@ function CameraRig({
 
     camera.lookAt(0, 0, camera.position.z - 6);
 
-    // Call invalidate() if camera is still moving, ensuring frameloop="demand" renders frames smoothly
+    // Invalidate for demand rendering loop
     if (Math.abs(camera.position.z - lastZ.current) > 0.001) {
       lastZ.current = camera.position.z;
       invalidate();
@@ -208,13 +246,16 @@ export default function RoomTourScene({
   return (
     <Canvas
       frameloop="demand"
+      dpr={[1, 2]}
       camera={{ fov: isMobile ? 58 : 50, position: [0, 0, 7] }}
+      onCreated={({ gl }) => {
+        gl.setClearColor("#1C1B19");
+      }}
       gl={{
-        antialias: !isMobile,
+        antialias: true,
         powerPreference: "high-performance",
         alpha: true,
       }}
-      dpr={isMobile ? [1, 1.25] : [1, 1.5]}
       className="w-full h-full"
     >
       <ambientLight intensity={1.4} />

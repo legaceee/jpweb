@@ -6,7 +6,7 @@ import Image from "next/image";
 import { Phone } from "lucide-react";
 import { FaWhatsapp } from "react-icons/fa";
 import { getWhatsAppLink } from "../../lib/config";
-import { ROOMS, ROOM_SPACING, TourRoom } from "./Scene";
+import { ROOMS, TourRoom } from "./Scene";
 
 const RoomTourScene = dynamic(() => import("./Scene"), {
   ssr: false,
@@ -83,6 +83,7 @@ export default function RoomTour() {
   const containerRef = useRef<HTMLDivElement>(null);
   const scrollProgress = useRef(0);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [ctaOpacity, setCtaOpacity] = useState(0);
   const [isNearViewport, setIsNearViewport] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [mode, setMode] = useState<"webgl" | "reduced">("webgl");
@@ -142,7 +143,7 @@ export default function RoomTour() {
     return () => observer.disconnect();
   }, [mode]);
 
-  // Handle scroll progress updates
+  // Handle scroll progress updates & CTA phase mapping
   useEffect(() => {
     if (mode !== "webgl") return;
 
@@ -155,11 +156,18 @@ export default function RoomTour() {
       const progress = Math.min(Math.max(-rect.top / total, 0), 1);
       scrollProgress.current = progress;
 
+      // Phase 1 (0.0 -> 0.85): Room travel
+      const roomPhaseEnd = 0.85;
+      const roomProgress = Math.min(progress / roomPhaseEnd, 1);
       const idx = Math.min(
-        Math.floor(progress * ROOMS.length),
+        Math.floor(roomProgress * ROOMS.length),
         ROOMS.length - 1
       );
       setActiveIndex(idx);
+
+      // Phase 2 (0.85 -> 1.0): CTA overlay fade in while parked at Bathroom
+      const ctaOp = Math.max((progress - roomPhaseEnd) / (1.0 - roomPhaseEnd), 0);
+      setCtaOpacity(ctaOp);
     }
 
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -172,8 +180,12 @@ export default function RoomTour() {
     if (!containerRef.current) return;
     const containerTop =
       containerRef.current.getBoundingClientRect().top + window.scrollY;
-    const perRoom = window.innerHeight;
-    const targetScroll = containerTop + index * perRoom;
+    const totalScrollable = containerRef.current.offsetHeight - window.innerHeight;
+    const roomPhaseEnd = 0.85;
+    const roomFraction = index / (ROOMS.length - 1);
+    const targetProgress = roomFraction * roomPhaseEnd;
+    const targetScroll = containerTop + targetProgress * totalScrollable;
+
     window.scrollTo({
       top: targetScroll,
       behavior: "smooth",
@@ -200,11 +212,9 @@ export default function RoomTour() {
     <section
       aria-label="Interactive 3D home design walkthrough tour"
       ref={containerRef}
-      style={{ height: `${ROOMS.length * 100}vh`, position: "relative" }}
+      style={{ height: "500vh", position: "relative" }}
     >
-      <div
-        className="sticky top-0 w-full h-screen overflow-hidden bg-[#1C1B19]"
-      >
+      <div className="sticky top-0 w-full h-screen overflow-hidden bg-[#1C1B19]">
         {/* Lazy-mounted 3D WebGL Canvas Scene */}
         {isNearViewport && (
           <div className="absolute inset-0">
@@ -219,7 +229,10 @@ export default function RoomTour() {
         <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black/80 via-black/30 to-black/10 z-10" />
 
         {/* Overlay Copy — transitions cleanly on active room */}
-        <div className="absolute bottom-0 left-0 right-0 pb-28 sm:pb-32 px-6 lg:px-16 z-20 pointer-events-none">
+        <div
+          className="absolute bottom-0 left-0 right-0 pb-28 sm:pb-32 px-6 lg:px-16 z-20 pointer-events-none transition-opacity duration-500"
+          style={{ opacity: 1 - ctaOpacity * 0.8 }}
+        >
           <div className="max-w-2xl transition-all duration-500 transform translate-y-0">
             <span className="label-text text-accent text-[9px] sm:text-[10px] block mb-2 sm:mb-3">
               {activeRoom.eyebrow}
@@ -280,22 +293,23 @@ export default function RoomTour() {
           </button>
         )}
 
-        {/* End-of-tour CTA — resolves on last room (Bathroom) */}
+        {/* End-of-tour CTA — fades in during phase 2 (0.85 -> 1.0) while camera stays parked at Bathroom */}
         <div
-          className={`absolute bottom-20 sm:bottom-24 left-0 right-0 flex justify-center z-30 transition-all duration-500 ${
-            activeIndex === ROOMS.length - 1
-              ? "opacity-100 translate-y-0"
-              : "opacity-0 translate-y-4 pointer-events-none"
-          }`}
+          className="absolute bottom-20 sm:bottom-24 left-0 right-0 flex justify-center z-30 transition-all duration-300"
+          style={{
+            opacity: ctaOpacity,
+            pointerEvents: ctaOpacity > 0.3 ? "auto" : "none",
+            transform: `translateY(${(1 - ctaOpacity) * 16}px)`,
+          }}
         >
-          <div className="text-center px-6">
-            <p className="text-base sm:text-xl text-white/90 font-serif italic mb-4 sm:mb-6">
+          <div className="text-center px-6 bg-black/40 backdrop-blur-md py-6 px-8 rounded-2xl border border-white/10 max-w-lg shadow-2xl">
+            <p className="text-lg sm:text-2xl text-white font-serif italic mb-5">
               Ready to design a space like this?
             </p>
             <div className="flex flex-wrap justify-center gap-3 sm:gap-4">
               <a
                 href="#contact"
-                className="inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-paper px-5 sm:px-6 py-3 sm:py-3.5 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 shadow-lg shadow-accent/20"
+                className="inline-flex items-center gap-2 bg-accent hover:bg-accent-hover text-paper px-6 py-3.5 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 shadow-lg shadow-accent/20"
               >
                 <Phone size={16} />
                 Book a Site Visit
@@ -304,7 +318,7 @@ export default function RoomTour() {
                 href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 border border-white/30 hover:border-white/60 text-white hover:bg-white/10 px-5 py-3 sm:py-3.5 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 backdrop-blur-sm"
+                className="inline-flex items-center gap-2 border border-white/30 hover:border-white/60 text-white hover:bg-white/10 px-6 py-3.5 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 backdrop-blur-sm"
               >
                 <FaWhatsapp className="text-[#25D366] w-[18px] h-[18px]" />
                 Chat on WhatsApp
