@@ -6,6 +6,7 @@ import { useTexture } from "@react-three/drei";
 import * as THREE from "three";
 
 export const ROOM_SPACING = 14;
+export const VIEW_DISTANCE = 7.0;
 
 export interface TourRoom {
   id: string;
@@ -187,7 +188,7 @@ function CameraRig({
   isMobile: boolean;
 }) {
   const { camera, invalidate } = useThree();
-  const startZ = 7;
+  const startZ = VIEW_DISTANCE; // 7.0 viewing offset
   const maxZ = -(ROOM_SPACING * (ROOMS.length - 1)); // Exactly -42 (Bathroom plane position)
   const lastZ = useRef(camera.position.z);
 
@@ -222,12 +223,38 @@ function CameraRig({
 
     camera.lookAt(0, 0, camera.position.z - 6);
 
-    // Invalidate for demand rendering loop
-    if (Math.abs(camera.position.z - lastZ.current) > 0.001) {
+    // Continue triggering frame renders until elastic follow settles
+    const distToTarget = Math.abs(camera.position.z - targetZ);
+    if (distToTarget > 0.005 || Math.abs(camera.position.z - lastZ.current) > 0.001) {
       lastZ.current = camera.position.z;
       invalidate();
     }
   });
+
+  return null;
+}
+
+/* --------------------------------------------------------------------------
+   Register Invalidate Callback with parent ref
+   -------------------------------------------------------------------------- */
+
+function InvalidateRegister({
+  invalidateRef,
+}: {
+  invalidateRef?: React.MutableRefObject<(() => void) | null>;
+}) {
+  const { invalidate } = useThree();
+
+  useEffect(() => {
+    if (invalidateRef) {
+      invalidateRef.current = invalidate;
+    }
+    return () => {
+      if (invalidateRef) {
+        invalidateRef.current = null;
+      }
+    };
+  }, [invalidate, invalidateRef]);
 
   return null;
 }
@@ -238,16 +265,18 @@ function CameraRig({
 
 export default function RoomTourScene({
   scrollProgress,
+  invalidateRef,
   isMobile = false,
 }: {
   scrollProgress: React.MutableRefObject<number>;
+  invalidateRef?: React.MutableRefObject<(() => void) | null>;
   isMobile?: boolean;
 }) {
   return (
     <Canvas
       frameloop="demand"
       dpr={[1, 2]}
-      camera={{ fov: isMobile ? 58 : 50, position: [0, 0, 7] }}
+      camera={{ fov: isMobile ? 58 : 50, position: [0, 0, VIEW_DISTANCE] }}
       onCreated={({ gl }) => {
         gl.setClearColor("#1C1B19");
       }}
@@ -258,6 +287,7 @@ export default function RoomTourScene({
       }}
       className="w-full h-full"
     >
+      <InvalidateRegister invalidateRef={invalidateRef} />
       <ambientLight intensity={1.4} />
       <directionalLight position={[5, 10, 5]} intensity={0.9} />
 
