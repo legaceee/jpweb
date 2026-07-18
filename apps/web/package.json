@@ -13,6 +13,8 @@
   "dependencies": {
     "@gsap/react": "^2.1.2",
     "@prisma/client": "latest",
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.6.1",
     "db": "workspace:*",
     "framer-motion": "^12.42.2",
     "gsap": "^3.15.0",
@@ -21,6 +23,7 @@
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-icons": "^5.7.0",
+    "three": "^0.185.1",
     "zod": "^4.4.3"
   },
   "devDependencies": {
@@ -30,6 +33,7 @@
     "@types/node": "^22.15.3",
     "@types/react": "19.2.2",
     "@types/react-dom": "19.2.2",
+    "@types/three": "^0.185.1",
     "eslint": "^9.39.1",
     "postcss": "^8.5.17",
     "prisma": "latest",
