@@ -1,5 +1,5 @@
 import { prisma } from "db";
-import Hero from "../components/hero";
+import HomeTour from "../components/home-tour";
 import TrustStrip from "../components/trust-strip";
 import Services from "../components/services";
 import Process from "../components/process";
@@ -48,7 +48,8 @@ export default async function Home() {
 
   return (
     <>
-      <Hero />
+      <HomeTour />
+      <div id="main-content" />
       <TrustStrip />
       <Services />
       <Process />
