@@ -1,45 +1,74 @@
+"use client";
+
+import Link from "next/link";
 import { MapPin, Phone, Mail } from "lucide-react";
 import { contactConfig } from "../lib/config";
-
-const quickLinks = [
-  { name: "Services", href: "#services" },
-  { name: "Our Process", href: "#process" },
-  { name: "Portfolio", href: "#portfolio" },
-  { name: "Testimonials", href: "#testimonials" },
-  { name: "Book a Visit", href: "#contact" },
-];
+import { useI18n } from "../context/i18n-context";
 
 export default function Footer() {
+  const { t } = useI18n();
+
+  const quickLinks = [
+    { name: t.nav.services, href: "/#services" },
+    { name: t.nav.process, href: "/#process" },
+    { name: t.nav.portfolio, href: "/#portfolio" },
+    { name: t.nav.testimonials, href: "/#testimonials" },
+    { name: t.nav.contact, href: "/#contact" },
+  ];
+
+  const toolLinks = [
+    { name: t.nav.estimator, href: "/estimate" },
+    { name: t.nav.styleQuiz, href: "/style-quiz" },
+    { name: t.nav.checklist, href: "/checklist" },
+    { name: t.nav.refer, href: "/refer" },
+    { name: t.nav.status, href: "/admin" },
+  ];
+
   return (
     <footer className="bg-ink text-paper/80 pt-16 pb-8 border-t border-paper/5">
       <div className="max-w-7xl mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           {/* Brand */}
-          <div className="space-y-4">
+          <div className="space-y-4 md:col-span-1">
             <img
               src="/assets/logo-dark.svg"
               alt="JP Enterprises"
               className="h-10 w-auto"
             />
             <p className="text-sm text-paper/50 leading-relaxed max-w-xs">
-              Interior design and civil contracting in Mumbai. Decades of
-              hands-on experience, from structural foundations to finished
-              interiors.
+              {t.footer.tagline}
             </p>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h3 className="label-text text-brass-light mb-6">Quick Links</h3>
+            <h3 className="label-text text-brass-light mb-6">{t.footer.quickLinks}</h3>
             <ul className="space-y-3">
               {quickLinks.map((link) => (
                 <li key={link.name}>
-                  <a
+                  <Link
                     href={link.href}
                     className="text-sm text-paper/50 hover:text-paper transition-colors"
                   >
                     {link.name}
-                  </a>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Interactive Tools */}
+          <div>
+            <h3 className="label-text text-brass-light mb-6">Interactive Tools</h3>
+            <ul className="space-y-3">
+              {toolLinks.map((link) => (
+                <li key={link.name}>
+                  <Link
+                    href={link.href}
+                    className="text-sm text-paper/50 hover:text-paper transition-colors"
+                  >
+                    {link.name}
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -47,7 +76,7 @@ export default function Footer() {
 
           {/* Contact */}
           <div>
-            <h3 className="label-text text-brass-light mb-6">Contact</h3>
+            <h3 className="label-text text-brass-light mb-6">{t.footer.contact}</h3>
             <ul className="space-y-4 text-sm">
               <li className="flex items-start gap-3">
                 <MapPin size={16} className="text-brass-light shrink-0 mt-0.5" />
@@ -73,14 +102,14 @@ export default function Footer() {
               </li>
             </ul>
             <p className="text-xs text-paper/30 mt-4">
-              Serving Mumbai
+              {t.footer.serving}
             </p>
           </div>
         </div>
 
         {/* Bottom bar */}
         <div className="pt-8 border-t border-paper/5 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-paper/30">
-          <p>© {new Date().getFullYear()} JP Enterprises. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} JP Enterprises. {t.footer.rights}</p>
           <p>Interior Design & Civil Contracting — Mumbai</p>
         </div>
       </div>

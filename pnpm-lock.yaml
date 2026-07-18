@@ -23,7 +23,7 @@ importers:
       '@prisma/client':
         specifier: latest
         version: 7.8.0(prisma@7.8.0(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.2))(typescript@5.9.2)
-      '@repo/database':
+      db:
         specifier: workspace:*
         version: link:../../packages/database
       framer-motion:
@@ -88,7 +88,7 @@ importers:
         specifier: latest
         version: 7.8.0
       '@prisma/client':
-        specifier: latest
+        specifier: ^7.8.0
         version: 7.8.0(prisma@7.8.0(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.2))(typescript@5.9.2)
       dotenv:
         specifier: ^16.4.5
@@ -104,7 +104,7 @@ importers:
         specifier: ^8.11.4
         version: 8.20.0
       prisma:
-        specifier: latest
+        specifier: ^7.8.0
         version: 7.8.0(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.2)
       tsx:
         specifier: ^4.19.0

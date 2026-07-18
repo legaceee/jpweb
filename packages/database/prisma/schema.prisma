@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "../generated"
 }
 
 datasource db {
@@ -7,14 +8,16 @@ datasource db {
 }
 
 model Appointment {
-  id            String   @id @default(uuid())
+  id            String    @id @default(uuid())
   name          String
   phone         String
   serviceType   String
+  scheduledSlot DateTime?
   preferredDate String
   message       String?
-  status        String   @default("NEW")
-  createdAt     DateTime @default(now())
+  source        String    @default("booking") // "booking" | "checklist" | "estimate"
+  status        String    @default("NEW")
+  createdAt     DateTime  @default(now())
 }
 
 model Testimonial {
@@ -24,4 +27,35 @@ model Testimonial {
   quote       String
   isPublished Boolean  @default(true)
   createdAt   DateTime @default(now())
+}
+
+model Project {
+  id           String        @id @default(uuid())
+  clientName   String
+  phone        String
+  statusToken  String        @unique @default(uuid())
+  currentStage String        @default("ENQUIRY") // "ENQUIRY" | "DESIGN" | "APPROVAL" | "EXECUTION" | "HANDOVER"
+  updates      StageUpdate[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model StageUpdate {
+  id        String   @id @default(uuid())
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  stage     String
+  note      String?
+  createdAt DateTime @default(now())
+}
+
+model Referral {
+  id            String   @id @default(uuid())
+  referrerName  String
+  referrerPhone String
+  refereeName   String
+  refereePhone  String
+  code          String   @unique
+  status        String   @default("PENDING") // "PENDING" | "CONTACTED" | "CONVERTED"
+  createdAt     DateTime @default(now())
 }

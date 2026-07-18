@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /admin
+Disallow: /status/
+
+Sitemap: https://jpenterprises.com/sitemap.xml

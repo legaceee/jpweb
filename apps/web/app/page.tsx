@@ -1,4 +1,4 @@
-import { prisma } from "@repo/database";
+import { prisma } from "db";
 import Hero from "../components/hero";
 import TrustStrip from "../components/trust-strip";
 import Services from "../components/services";
@@ -11,7 +11,7 @@ import AppointmentForm from "../components/appointment-form";
 
 async function getTestimonials() {
   try {
-    const testimonials = await prisma.testimonial.findMany({
+    const testimonials = await prisma.testimonial?.findMany({
       where: { isPublished: true },
       orderBy: { createdAt: "desc" },
       select: {
@@ -24,7 +24,6 @@ async function getTestimonials() {
     return testimonials;
   } catch (error) {
     console.error("[Testimonials] DB fetch failed:", error);
-    // Return hardcoded fallback so the page still renders
     return [
       {
         id: "fallback-1",
