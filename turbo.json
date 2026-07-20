@@ -9,7 +9,8 @@
       "env": [
         "DATABASE_URL",
         "NEXT_PUBLIC_PHONE",
-        "NEXT_PUBLIC_WHATSAPP"
+        "NEXT_PUBLIC_WHATSAPP",
+        "CA_CERT"
       ]
     },
     "lint": {
