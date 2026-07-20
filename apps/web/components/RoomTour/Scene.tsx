@@ -205,8 +205,8 @@ function CameraRig({
       startZ
     );
 
-    // Elastic lerp follow
-    const lerpFactor = isMobile ? 0.12 : 0.06;
+    // Elastic lerp follow — higher factor = more responsive, lower = silkier
+    const lerpFactor = isMobile ? 0.15 : 0.09;
     let nextZ = THREE.MathUtils.lerp(camera.position.z, targetZ, lerpFactor);
 
     // Double clamp camera Z to guarantee overshoot into black void is physically impossible
