@@ -233,6 +233,24 @@ export default function RoomTour() {
           </div>
         )}
 
+        {/* End-of-tour static image — fades in when CTA appears, preventing black void */}
+        <div
+          className="absolute inset-0 z-[5]"
+          style={{
+            opacity: ctaOpacity,
+            transition: "opacity 0.6s ease",
+          }}
+        >
+          <Image
+            src={(ROOMS[ROOMS.length - 1] || ROOMS[0])!.texture}
+            alt="Interior design concept"
+            fill
+            className="object-cover"
+            sizes="100vw"
+            priority={false}
+          />
+        </div>
+
         {/* Ambient Dark Gradient for text legibility */}
         <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-black/80 via-black/30 to-black/10 z-10" />
 
